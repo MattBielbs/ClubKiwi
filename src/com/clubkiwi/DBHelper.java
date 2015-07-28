@@ -1,4 +1,5 @@
 package com.clubkiwi;
+import com.clubkiwi.Character.Accessory;
 import com.clubkiwi.Character.Kiwi;
 
 import java.io.BufferedReader;
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Mathew on 7/28/2015.
@@ -40,7 +42,7 @@ public class DBHelper
     }
 
     //returns empty array if no characters present.
-    public ArrayList<Kiwi> GetCharacters()
+    public ArrayList<Kiwi> GetCharacters() throws IllegalStateException
     {
         if(!bLoggedIn)
             throw new IllegalStateException("You need to be logged in to get characters");
@@ -54,8 +56,46 @@ public class DBHelper
         String[] holder = response.split("/");
         int nChars = Integer.parseInt(holder[0]);
 
-        for(int i = 1; i < nChars * 10; i += 10)
+        for(int i = 1; i < nChars * 12; i += 12)
             temp.add(new Kiwi(Integer.parseInt(holder[i]), holder[i + 1], Double.parseDouble(holder[i + 2]), Double.parseDouble(holder[i + 3]), Double.parseDouble(holder[i + 4]), Double.parseDouble(holder[i + 5]), Double.parseDouble(holder[i + 6]), Double.parseDouble(holder[i + 7]), Double.parseDouble(holder[i + 8]), Double.parseDouble(holder[i + 9]), Double.parseDouble(holder[i + 10])));
+
+        return temp;
+    }
+
+    //returns empty array if no accessories present.
+    public ArrayList<Accessory> GetAccessories() throws IllegalStateException
+    {
+        if(!bLoggedIn)
+            throw new IllegalStateException("You need to be logged in to get accessories");
+
+        ArrayList<Accessory> temp = new ArrayList<Accessory>();
+
+        String response = doPost(api, "Action=accessories");
+        if(response.isEmpty())
+            return temp;
+
+        String[] holder = response.split("/");
+        int nAccs = Integer.parseInt(holder[0]);
+
+        for(int i = 1; i < nAccs * 6; i += 6)
+        {
+            //Build hashmaps
+            HashMap<String, Double> sReqs = new HashMap<String, Double>();
+            HashMap<String, Double> sBoosts = new HashMap<String, Double>();
+
+            String[] rtemp = holder[i+4].split(",");
+            sReqs.put("Strength", Double.parseDouble(rtemp[0]));
+            sReqs.put("Speed", Double.parseDouble(rtemp[1]));
+            sReqs.put("Flight", Double.parseDouble(rtemp[2]));
+            sReqs.put("Swag", Double.parseDouble(rtemp[3]));
+
+            rtemp = holder[i+5].split(",");
+            sBoosts.put("Hunger", Double.parseDouble(rtemp[0]));
+            sBoosts.put("Social", Double.parseDouble(rtemp[1]));
+            sBoosts.put("Energy", Double.parseDouble(rtemp[2]));
+
+            temp.add(new Accessory(Integer.parseInt(holder[i]), holder[i+1], holder[i + 2], Double.parseDouble(holder[i + 3]), sReqs, sBoosts));
+        }
 
         return temp;
     }

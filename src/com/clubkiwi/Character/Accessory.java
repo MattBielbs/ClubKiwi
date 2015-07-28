@@ -7,16 +7,31 @@ import java.util.HashMap;
  */
 public class Accessory
 {
+    private int index;
     private double dPrice;
     private String sName, sDescription;
     private HashMap<String, Double> statReqs, statBoosts;
 
-    public Accessory(double dPrice, String sName, String sDescription, HashMap<String, Double> sReqs, HashMap<String, Double> sBoosts)
+    public Accessory(int index, String sName, String sDescription, double dPrice, HashMap<String, Double> statReqs, HashMap<String, Double> statBoosts)
     {
+        this.index = index;
         this.dPrice = dPrice;
         this.sName = sName;
         this.sDescription = sDescription;
-        this.statReqs = sReqs;
-        this.statBoosts = sBoosts;
+        this.statReqs = statReqs;
+        this.statBoosts = statBoosts;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Accessory{" +
+                "index=" + index +
+                ", dPrice=" + dPrice +
+                ", sName='" + sName + '\'' +
+                ", sDescription='" + sDescription + '\'' +
+                ", statReqs=" + statReqs +
+                ", statBoosts=" + statBoosts +
+                '}';
     }
 }
