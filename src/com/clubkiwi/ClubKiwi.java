@@ -20,6 +20,9 @@ public class ClubKiwi
 
     public void Init()
     {
+       // byte[] data = Packer.Serialize((byte)ServerPacket.UpdatePlayer, c.CI.ID, c.CI.PosX, c.CI.PosY, c.CI.Rotation);
+     //   cc.Send(data);
+
         Helper.println("Welcome to ClubKiwi");
         Helper.println("=========================");
 
@@ -37,6 +40,7 @@ public class ClubKiwi
         ArrayList<Accessory> accs = dbHelper.GetAccessories();
         for(Accessory a : accs)
             Helper.println(a.toString());
+
 
     }
 
