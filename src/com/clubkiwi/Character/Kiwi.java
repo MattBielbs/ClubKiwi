@@ -5,8 +5,6 @@ package com.clubkiwi.Character;
  */
 public class Kiwi
 {
-    //Identifier
-    private int index;
     //Attributes
     private String name;
     private double health, money;
@@ -17,9 +15,8 @@ public class Kiwi
     //Needs
     private double hunger, social, energy;
 
-    public Kiwi(int index, String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double social, double energy)
+    public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double social, double energy)
     {
-        this.index = index;
         this.name = name;
         this.health = health;
         this.money = money;
@@ -138,8 +135,7 @@ public class Kiwi
     public String toString()
     {
         return "Kiwi{" +
-                "index=" + index +
-                ", name='" + name + '\'' +
+                " name='" + name + '\'' +
                 ", health=" + health +
                 ", money=" + money +
                 ", strength=" + strength +

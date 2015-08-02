@@ -1,47 +1,78 @@
 package com.clubkiwi;
-import com.clubkiwi.*;
-import com.clubkiwi.Character.Accessory;
-import com.clubkiwi.Character.Kiwi;
+import com.clubkiwi.Character.*;
+import com.clubkiwiserver.Packet.*;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Main game class
  */
 public class ClubKiwi
 {
-    private DBHelper dbHelper;
+    public CUI cui;
+    public Connection conn;
+    private boolean bLoggedin;
+    private int userid;
 
     public ClubKiwi()
     {
-        dbHelper = new DBHelper();
+        conn = new Connection(this);
+        cui = new CUI(this);
         Init();
     }
 
     public void Init()
     {
-       // byte[] data = Packer.Serialize((byte)ServerPacket.UpdatePlayer, c.CI.ID, c.CI.PosX, c.CI.PosY, c.CI.Rotation);
-     //   cc.Send(data);
+        cui.DisplayIntro();
+    }
 
-        Helper.println("Welcome to ClubKiwi");
-        Helper.println("=========================");
+    public void OnPacketReceive(Packet p)
+    {
+        //debug print
+        Helper.println(p.getType() + ": " + Helper.arraytostring(p.getAllData()));
 
-        Helper.print("Testing login (matypatty, mathew): ");
-        Helper.println(dbHelper.Login("matypatty", "mathew") ? "True" : "False");
-        //Helper.print("Testing login (Purple_C0wz, dank): ");
-        //Helper.println(dbHelper.Login("Purple_C0wz", "dank") ? "True" : "False");
+        switch(p.getType())
+        {
+            case Login_S:
+                CheckAccount((Integer)p.getData(0), (String) p.getData(1));
+                break;
+            case CreateUser_S:
+                CheckAccount((Integer)p.getData(0), (String) p.getData(1));
+                break;
+            case CharacterList_S:
+                LoadCharacter(p);
 
-        Helper.println("Testing Characters:");
-        ArrayList<Kiwi> chars = dbHelper.GetCharacters();
-        for(Kiwi k : chars)
-            Helper.println(k.toString());
+        }
+    }
 
-        Helper.println("Loading accessories from database:");
-        ArrayList<Accessory> accs = dbHelper.GetAccessories();
-        for(Accessory a : accs)
-            Helper.println(a.toString());
+    private void CheckAccount(int id, String message)
+    {
+        if(id == 0)
+        {
+            Helper.println(message);
+            cui.DisplayWelcome();
+        }
+        else
+        {
+            userid = id;
+            bLoggedin = true;
+            GetCharacter();
+        }
+    }
 
+    private void GetCharacter()
+    {
+        if(!bLoggedin)
+            throw new IllegalStateException("You need to be logged in to get your character");
 
+        conn.SendData(PacketType.CharacterList_C);
+    }
+
+    private void LoadCharacter(Packet p)
+    {
+        Kiwi k = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
+        cui.MainCharacterScreen(k);
     }
 
 }

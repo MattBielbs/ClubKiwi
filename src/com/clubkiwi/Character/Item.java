@@ -3,16 +3,16 @@ package com.clubkiwi.Character;
 import java.util.HashMap;
 
 /**
- * Accessory class (bling and such)
+ * Item class (bling and such)
  */
-public class Accessory
+public class Item
 {
     private int index;
     private double dPrice;
     private String sName, sDescription;
     private HashMap<String, Double> statReqs, statBoosts;
 
-    public Accessory(int index, String sName, String sDescription, double dPrice, HashMap<String, Double> statReqs, HashMap<String, Double> statBoosts)
+    public Item(int index, String sName, String sDescription, double dPrice, HashMap<String, Double> statReqs, HashMap<String, Double> statBoosts)
     {
         this.index = index;
         this.dPrice = dPrice;
@@ -25,7 +25,7 @@ public class Accessory
     @Override
     public String toString()
     {
-        return "Accessory{" +
+        return "Item{" +
                 "index=" + index +
                 ", dPrice=" + dPrice +
                 ", sName='" + sName + '\'' +
