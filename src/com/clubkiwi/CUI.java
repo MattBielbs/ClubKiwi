@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Created by Mathew on 8/2/2015.
+ * Created by Mathew and trevor(kinda) on 8/2/2015.
  */
 public class CUI
 {
