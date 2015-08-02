@@ -66,7 +66,7 @@ public class ClubKiwi
         if(!bLoggedin)
             throw new IllegalStateException("You need to be logged in to get your character");
 
-        conn.SendData(PacketType.CharacterList_C);
+        conn.SendData(PacketType.CharacterList_C, 0);
     }
 
     private void LoadCharacter(Packet p)
