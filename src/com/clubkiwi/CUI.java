@@ -38,6 +38,10 @@ public class CUI
         {
             Login();
         }
+        else
+        {
+            DisplayWelcome();
+        }
     }
 
     private void Register()
