@@ -14,6 +14,7 @@ public class ClubKiwi
     public Connection conn;
     private boolean bLoggedin;
     private int userid;
+    private Kiwi localKiwi;
 
     public ClubKiwi()
     {
@@ -34,43 +35,27 @@ public class ClubKiwi
 
         switch(p.getType())
         {
-            case Login_S:
-                CheckAccount((Integer)p.getData(0), (String) p.getData(1));
+            case Login_S://This is always an error
+                AccountError((Integer) p.getData(0), (String) p.getData(1));
                 break;
-            case CreateUser_S:
-                CheckAccount((Integer)p.getData(0), (String) p.getData(1));
+            case CreateUser_S://This is always an error
+                AccountError((Integer) p.getData(0), (String) p.getData(1));
                 break;
-            case CharacterList_S:
+            case CharacterList_S://You logged in correctly
                 LoadCharacter(p);
 
         }
     }
 
-    private void CheckAccount(int id, String message)
+    private void AccountError(int id, String message)
     {
-        if(id == 0)
-        {
-            Helper.println(message);
-            cui.DisplayWelcome();
-        }
-        else
-        {
-            userid = id;
-            bLoggedin = true;
-            GetCharacter();
-        }
-    }
-
-    private void GetCharacter()
-    {
-        if(!bLoggedin)
-            throw new IllegalStateException("You need to be logged in to get your character");
-
-        conn.SendData(PacketType.CharacterList_C, 0);
+        Helper.println(message);
+        cui.DisplayWelcome();
     }
 
     private void LoadCharacter(Packet p)
     {
+        Helper.println("Logged in!");
         Kiwi k = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
         cui.MainCharacterScreen(k);
     }
