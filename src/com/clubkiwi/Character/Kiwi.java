@@ -134,17 +134,31 @@ public class Kiwi
     @Override
     public String toString()
     {
-        return "Kiwi{" +
-                " name='" + name + '\'' +
-                ", health=" + health +
-                ", money=" + money +
+        return name + ": " +
+                "\nhealth=" + getHealthBar() +
+                "\nmoney=" + money +
                 ", strength=" + strength +
                 ", speed=" + speed +
                 ", flight=" + flight +
                 ", swag=" + swag +
                 ", hunger=" + hunger +
                 ", social=" + social +
-                ", energy=" + energy +
-                '}';
+                ", energy=" + energy;
+    }
+
+    private String getHealthBar()
+    {
+        String temp = "[";
+        for(int i = 0; i < 100 ; i+= 2)
+        {
+            if(i < getHealth())
+                temp += "=";
+            else
+                temp += " ";
+        }
+
+        temp += "] " + getHealth() + "%";
+
+        return temp;
     }
 }

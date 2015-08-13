@@ -37,7 +37,7 @@ public class ClubKiwi
     public void OnPacketReceive(Packet p)
     {
         //debug print
-        Helper.println(p.getType() + ": " + Helper.arraytostring(p.getAllData()));
+       // Helper.println(p.getType() + ": " + Helper.arraytostring(p.getAllData()));
 
         switch(p.getType())
         {
@@ -51,7 +51,7 @@ public class ClubKiwi
                 LoadCharacter(p);
                 break;
             case KiwiUpdate_S:
-
+                UpdateKiwi(p);
                 break;
 
         }
