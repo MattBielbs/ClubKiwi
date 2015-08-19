@@ -58,7 +58,8 @@ public class CUI
 
     public void MainCharacterScreen(Kiwi k)
     {
-            Helper.println(k.toString());
+        Helper.clearConsole();
+        Helper.println(k.toString());
     }
 
 

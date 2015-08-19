@@ -134,8 +134,8 @@ public class Kiwi
     @Override
     public String toString()
     {
-        return name + ": " +
-                "\nhealth=" + getHealthBar() +
+        return getKiwiGraphic() + "\n" + name + ": " +
+                "\nhealth=" + getPercent(getHealth(), 5) +
                 "\nmoney=" + money +
                 ", strength=" + strength +
                 ", speed=" + speed +
@@ -146,19 +146,27 @@ public class Kiwi
                 ", energy=" + energy;
     }
 
-    private String getHealthBar()
+    private String getPercent(double value, int scale)
     {
         String temp = "[";
-        for(int i = 0; i < 100 ; i+= 2)
+        for(int i = 0; i < 100 ; i+= scale)
         {
-            if(i < getHealth())
+            if(i < value)
                 temp += "=";
             else
                 temp += " ";
         }
 
-        temp += "] " + getHealth() + "%";
+        temp += "] " + value + "%";
 
         return temp;
+    }
+
+    private String getKiwiGraphic()
+    {
+        return "   __ _\n" +
+                "  /  ('>-\n" +
+                "  \\__/\n" +
+                "   L\\_";
     }
 }
