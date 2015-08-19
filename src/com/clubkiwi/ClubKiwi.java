@@ -15,9 +15,12 @@ public class ClubKiwi
     private boolean bLoggedin;
     private int userid;
     private Kiwi localKiwi;
+    public static boolean running;
 
     public ClubKiwi()
     {
+        running = true;
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 Shutdown();
@@ -59,9 +62,8 @@ public class ClubKiwi
 
     private void UpdateKiwi(Packet p)
     {
-        Kiwi k = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
-        localKiwi = k;
-        cui.MainCharacterScreen(k);
+        localKiwi.updateKiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
+        cui.MainCharacterScreen();
     }
 
     private void AccountError(int id, String message)
@@ -73,9 +75,12 @@ public class ClubKiwi
     private void LoadCharacter(Packet p)
     {
         Helper.println("Logged in!");
-        Kiwi k = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
-        localKiwi = k;
-        cui.MainCharacterScreen(k);
+        localKiwi = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
+        cui.MainCharacterScreen();
+
+        //the command loop in a new thread.
+        Thread thread = new Thread(cui);
+        thread.start();
     }
 
     //So the server can keep track of clients accurately
@@ -84,4 +89,14 @@ public class ClubKiwi
         conn.SendData(PacketType.Disconnect, 0);
     }
 
+    public Kiwi getLocalKiwi()
+    {
+        return localKiwi;
+    }
+
+    //Updating the server when client changes.
+    public void updateServer()
+    {
+        conn.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getStrength(), localKiwi.getSpeed(), localKiwi.getFlight(), localKiwi.getSwag(), localKiwi.getHunger(), localKiwi.getMood(), localKiwi.getEnergy());
+    }
 }

@@ -17,7 +17,6 @@ public class Connection implements Runnable
     private InetAddress IPAddress;
     private byte[] sendData, receiveData;
     private Serializer s;
-    private boolean running;
     private Integer userid;
     private boolean bLoggedin;
 
@@ -30,7 +29,6 @@ public class Connection implements Runnable
             IPAddress = InetAddress.getByName("localhost");
             s = new Serializer();
             receiveData = new byte[1024];
-            running = true;
 
             //Start this class in a new thread
             Thread thread = new Thread(this);
@@ -49,7 +47,7 @@ public class Connection implements Runnable
 
     public void run()
     {
-        while (running)
+        while (ClubKiwi.running)
         {
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -60,7 +58,7 @@ public class Connection implements Runnable
             catch(Exception ex)
             {
                 Helper.println("Lost connection to server");
-                running = false;
+                ClubKiwi.running = false;
             }
 
             Packet p = s.Deserialize(receivePacket.getData());
