@@ -56,12 +56,6 @@ public class Item
     @Override
     public String toString()
     {
-        return "Item{" +
-                "index=" + index +
-                ", dPrice=" + dPrice +
-                ", sName='" + sName + '\'' +
-                ", sDescription='" + sDescription + '\'' +
-                ", type=" + type +
-                '}';
+        return "(" + index + ") " + type + ": "  + sName + " " + sDescription;
     }
 }

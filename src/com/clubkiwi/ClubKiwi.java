@@ -42,20 +42,21 @@ public class ClubKiwi
         HashMap<String, Double> map1 = new HashMap<String, Double>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
-        items.add(new Item(items.size(),"Worms", "Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
+        items.add(new Item(items.size(),"Worms", "| Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
 
         HashMap<String, Double> map2 = new HashMap<String, Double>();
         map2.put("Hunger", 5.0);
         map2.put("Energy", 5.0);
         map2.put("Mood", -5.0);
-        items.add(new Item(items.size(), "Fruit", "you know what a fruit is nerd", 0.0, ItemType.Food, map2));
+        items.add(new Item(items.size(), "Fruit", "| Keep it fruity you groovy smoothie. Adds 5 hunger and energy", 0.0, ItemType.Food, map2));
 
         HashMap<String, Double> map3 = new HashMap<String, Double>();
         map3.put("Hunger", -5.0);
         map3.put("Mood", 10.0);
-        items.add(new Item(items.size(), "Grubz", "Dont taste very good but gets you in a good mood if you know what i mean", 0.0, ItemType.Food, map3));
+        items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, ItemType.Food, map3));
         cui.DisplayIntro();
     }
+//i just ate my ___ lol yum yum
 
     public void OnPacketReceive(Packet p)
     {
