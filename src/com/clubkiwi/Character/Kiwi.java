@@ -1,5 +1,6 @@
 package com.clubkiwi.Character;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -112,7 +113,7 @@ public class Kiwi
     public void setHealth(double health)
     {
         if (health < 0)
-            throw new IllegalArgumentException("Health cannot be set smaller than 0");
+            health = 0;
 
         this.health = health;
     }
@@ -120,10 +121,10 @@ public class Kiwi
     public void setMoney(double money)
     {
         if (money < 0)
-            throw new IllegalArgumentException("Money cannot be set smaller than 0");
+            money = 0;
 
         if (money < 100000)
-            throw new IllegalArgumentException("Money cannot be set larger than 100000");
+            money = 100000;
 
         this.money = money;
     }
@@ -136,43 +137,76 @@ public class Kiwi
     public void setStrength(double strength)
     {
         if (strength < 0)
-            throw new IllegalArgumentException("Strength cannot be set smaller than 0");
+            strength = 0;
+
+        if(strength > 100)
+            strength = 100;
+
         this.strength = strength;
     }
 
     public void setSpeed(double speed)
     {
         if (speed < 0)
-            throw new IllegalArgumentException("Speed cannot be set smaller than 0");
+            speed = 0;
+
+        if(speed > 100)
+            speed = 100;
+
         this.speed = speed;
     }
 
     public void setFlight(double flight)
     {
         if (flight < 0)
-            throw new IllegalArgumentException("Flight cannot be set smaller than 0");
+            flight = 0;
+
+        if(flight > 100)
+            flight = 100;
+
         this.flight = flight;
     }
 
     public void setHunger(double hunger)
     {
         if (hunger < 0)
-            throw new IllegalArgumentException("Hunger cannot be set smaller than 0");
+            hunger = 0;
+
+        if(hunger > 100)
+            hunger = 100;
+
         this.hunger = hunger;
     }
 
     public void setMood(double mood)
     {
         if (mood < 0)
-            throw new IllegalArgumentException("Mood cannot be set smaller than 0");
+            mood = 0;
+
+        if(mood > 100)
+            mood = 100;
         this.mood = mood;
     }
 
     public void setEnergy(double energy)
     {
         if (energy < 0)
-            throw new IllegalArgumentException("Energy cannot be set smaller than 0");
+            energy = 0;
+
+        if(energy > 100)
+            energy = 100;
+
         this.energy = energy;
+    }
+
+    public void giveItem(Item item)
+    {
+        //applies the effect to the kiwi
+        this.setHunger(this.getHunger() + item.getEffect().getOrDefault("Hunger", 0.0));
+        this.setMood(this.getMood() + item.getEffect().getOrDefault(("Mood"), 0.0));
+        this.setEnergy(this.getEnergy() + item.getEffect().getOrDefault("Energy", 0.0));
+        this.setSpeed(this.getSpeed() + item.getEffect().getOrDefault("Speed", 0.0));
+        this.setStrength(this.getStrength() + item.getEffect().getOrDefault("Strength", 0.0));
     }
 
     public void setSleeping(boolean sleeping)
@@ -180,7 +214,6 @@ public class Kiwi
         this.sleeping = sleeping;
     }
     //endregion
-
 
     //String things
     @Override
@@ -241,7 +274,7 @@ public class Kiwi
                     "  L\\_";
         }
 
-        if (mood > 80)
+        if (mood > 40)
         {
             //Left-Right facing animation style if happy.
             if (rndint > 0)
@@ -260,6 +293,9 @@ public class Kiwi
             }
         }
 
-        return "pissed off lol";
+        return "   _ __\n" +
+                " -<x.x)  \\\n" +
+                "    \\__/\n" +
+                "    _/I";
     }
 }

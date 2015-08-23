@@ -1,9 +1,12 @@
 package com.clubkiwi;
 
+import com.clubkiwi.Character.Item;
+import com.clubkiwi.Character.ItemType;
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwiserver.Packet.PacketType;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -68,7 +71,7 @@ public class CUI implements Runnable
                 "     |     |      (|      (   )      |)      /\\    Your kiwi will get   |\n" +
                 "     |     |       |                 |      /  \\   hungry over time you |\n" +
                 "     |     |_______|    /       \\    |_________ \\  must feed it or it   |\n" +
-                "     |     |        \\     _____     /          \\ \\  will die lol        |\n" +
+                "     |     |        \\     _____     /          \\ \\  will die LOL        |\n" +
                 "     |     |         \\   (_xD__)   /            \\ \\                     |\n" +
                 "     |     |          \\___________/              | \\ __________________/\n" +
                 "     |     |    |      |||||||||||               |\n" +
@@ -84,14 +87,21 @@ public class CUI implements Runnable
 
     private void Register()
     {
-        Helper.println("Enter the username and password you wish to use for your account:");
-        ck.conn.SendData(PacketType.CreateUser_C, scan.next(), scan.next());
+        Helper.println("Enter your desried username");
+        String username = scan.next();
+        Helper.println("Enter your desired password");
+        String password = scan.next();
+        ck.conn.SendData(PacketType.CreateUser_C, username, password);
     }
+
 
     private void Login()
     {
-        Helper.println("Enter your username and password:");
-        ck.conn.SendData(PacketType.Login_C, scan.next(), scan.next());
+        Helper.println("Enter your username");
+        String username = scan.next();
+        Helper.println("Enter your password");
+        String password = scan.next();
+        ck.conn.SendData(PacketType.Login_C, username, password);
     }
 
     public void MainCharacterScreen()
@@ -115,18 +125,65 @@ public class CUI implements Runnable
         //Poke command wakes up a sleeping kiwi.
         if (command.compareToIgnoreCase("poke") == 0)
         {
+            //Every time you wake up your kiwi it gets mad.
+            ck.getLocalKiwi().setMood(ck.getLocalKiwi().getMood() - 20.0);
             ck.getLocalKiwi().setSleeping(false);
         }
         else if(command.compareToIgnoreCase("feed") == 0)
         {
             if(ck.getLocalKiwi().isSleeping())
-                Helper.println("You cant feed your kiwi when it is sleeping, type poke to wake it.");
+                Helper.println("You cant feed your kiwi when it is sleeping, type poke to wake it up.");
             else
-                ck.getLocalKiwi().setHunger(100.0);
+            {
+                feedPet();
+            }
         }
+        else
+             Helper.println("Command not recognised.");
 
         //Every command we will update the server on changes even if there were none.
         ck.updateServer();
+
+        //when the server is updated it will sync the changes back to the client.
+    }
+
+    private void feedPet()
+    {
+        //foods do different things.
+        for(Item item : ClubKiwi.items)
+        {
+          if(item.getType() == ItemType.Food)
+          {
+                Helper.println(item.toString());
+          }
+        }
+
+        Helper.print("Enter the id of the food you wish to give to your kiwi: ");
+        try
+        {
+            int food = scan.nextInt();
+            boolean found = false;
+            for(Item item : ClubKiwi.items)
+            {
+                if(item.getType() == ItemType.Food && item.getIndex() == food)
+                {
+                    ck.getLocalKiwi().giveItem(item);
+                    Helper.println("You gave your kiwi " + item.getsName());
+                    found = true;
+                }
+            }
+
+            if(!found)
+            {
+                Helper.println("The food with that index was not found.");
+            }
+        }
+        catch(InputMismatchException ex)
+        {
+            Helper.println("You need to enter the number of the food.");
+        }
+
+        //ck.getLocalKiwi().setHunger(100.0);
     }
 
 

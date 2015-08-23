@@ -3,23 +3,54 @@ package com.clubkiwi.Character;
 import java.util.HashMap;
 
 /**
- * Item class (bling and such)
+ * Item class (food and toys for now)
  */
 public class Item
 {
     private int index;
     private double dPrice;
     private String sName, sDescription;
-    private HashMap<String, Double> statReqs, statBoosts;
+    private ItemType type;
+    private HashMap<String, Double> effect;
 
-    public Item(int index, String sName, String sDescription, double dPrice, HashMap<String, Double> statReqs, HashMap<String, Double> statBoosts)
+    public Item(int index, String sName, String sDescription, double dPrice, ItemType type, HashMap<String, Double> effect)
     {
         this.index = index;
         this.dPrice = dPrice;
         this.sName = sName;
         this.sDescription = sDescription;
-        this.statReqs = statReqs;
-        this.statBoosts = statBoosts;
+        this.type = type;
+        this.effect = effect;
+    }
+
+    public int getIndex()
+    {
+        return index;
+    }
+
+    public double getdPrice()
+    {
+        return dPrice;
+    }
+
+    public String getsName()
+    {
+        return sName;
+    }
+
+    public String getsDescription()
+    {
+        return sDescription;
+    }
+
+    public ItemType getType()
+    {
+        return type;
+    }
+
+    public HashMap<String, Double> getEffect()
+    {
+        return effect;
     }
 
     @Override
@@ -30,8 +61,7 @@ public class Item
                 ", dPrice=" + dPrice +
                 ", sName='" + sName + '\'' +
                 ", sDescription='" + sDescription + '\'' +
-                ", statReqs=" + statReqs +
-                ", statBoosts=" + statBoosts +
+                ", type=" + type +
                 '}';
     }
 }

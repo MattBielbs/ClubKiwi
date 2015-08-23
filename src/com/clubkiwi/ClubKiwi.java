@@ -3,6 +3,8 @@ import com.clubkiwi.Character.*;
 import com.clubkiwiserver.Packet.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,6 +18,7 @@ public class ClubKiwi
     private int userid;
     private Kiwi localKiwi;
     public static boolean running;
+    public static List<Item> items;
 
     public ClubKiwi()
     {
@@ -34,6 +37,23 @@ public class ClubKiwi
 
     public void Init()
     {
+        //Items are gonna be created here for now but in future will be sent from the server on initial startup connecion.
+        items = new ArrayList<Item>();
+        HashMap<String, Double> map1 = new HashMap<String, Double>();
+        map1.put("Hunger", 20.0);
+        map1.put("Energy", 5.0);
+        items.add(new Item(items.size(),"Worms", "Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
+
+        HashMap<String, Double> map2 = new HashMap<String, Double>();
+        map2.put("Hunger", 5.0);
+        map2.put("Energy", 5.0);
+        map2.put("Mood", -5.0);
+        items.add(new Item(items.size(), "Fruit", "you know what a fruit is nerd", 0.0, ItemType.Food, map2));
+
+        HashMap<String, Double> map3 = new HashMap<String, Double>();
+        map3.put("Hunger", -5.0);
+        map3.put("Mood", 10.0);
+        items.add(new Item(items.size(), "Grubz", "Dont taste very good but gets you in a good mood if you know what i mean", 0.0, ItemType.Food, map3));
         cui.DisplayIntro();
     }
 
