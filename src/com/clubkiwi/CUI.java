@@ -27,12 +27,12 @@ public class CUI implements Runnable
     {
         Helper.println(
                 " _____  _         _      _   __ _            _ \n" +
-                "/  __ \\| |       | |    | | / /(_)          (_)\n" +
-                "| /  \\/| | _   _ | |__  | |/ /  _ __      __ _ \n" +
-                "| |    | || | | || '_ \\ |    \\ | |\\ \\ /\\ / /| |\n" +
-                "| \\__/\\| || |_| || |_) || |\\  \\| | \\ V  V / | |\n" +
-                " \\____/|_| \\__,_||_.__/ \\_| \\_/|_|  \\_/\\_/  |_|\n" +
-                "                                               ");
+                        "/  __ \\| |       | |    | | / /(_)          (_)\n" +
+                        "| /  \\/| | _   _ | |__  | |/ /  _ __      __ _ \n" +
+                        "| |    | || | | || '_ \\ |    \\ | |\\ \\ /\\ / /| |\n" +
+                        "| \\__/\\| || |_| || |_) || |\\  \\| | \\ V  V / | |\n" +
+                        " \\____/|_| \\__,_||_.__/ \\_| \\_/|_|  \\_/\\_/  |_|\n" +
+                        "                                               ");
         Helper.println("=========================");
         DisplayWelcome();
     }
@@ -120,31 +120,38 @@ public class CUI implements Runnable
 
     public void inputLoop()
     {
-        String command = scan.nextLine();
+        try
+        {
+            String command = scan.nextLine();
 
-        //Poke command wakes up a sleeping kiwi.
-        if (command.compareToIgnoreCase("poke") == 0)
-        {
-            //Every time you wake up your kiwi it gets mad.
-            ck.getLocalKiwi().setMood(ck.getLocalKiwi().getMood() - 20.0);
-            ck.getLocalKiwi().setSleeping(false);
-        }
-        else if(command.compareToIgnoreCase("feed") == 0)
-        {
-            if(ck.getLocalKiwi().isSleeping())
-                Helper.println("You cant feed your kiwi when it is sleeping, type poke to wake it up.");
-            else
+            //Poke command wakes up a sleeping kiwi.
+            if (command.compareToIgnoreCase("poke") == 0)
             {
-                feedPet();
+                //Every time you wake up your kiwi it gets mad.
+                ck.getLocalKiwi().setMood(ck.getLocalKiwi().getMood() - 20.0);
+                ck.getLocalKiwi().setSleeping(false);
             }
+            else if (command.compareToIgnoreCase("feed") == 0)
+            {
+                if (ck.getLocalKiwi().isSleeping())
+                    Helper.println("You cant feed your kiwi when it is sleeping, type poke to wake it up.");
+                else
+                {
+                    feedPet();
+                }
+            }
+            else
+                Helper.println("Command not recognised.");
+
+            //Every command we will update the server on changes even if there were none.
+            ck.updateServer();
+
+            //when the server is updated it will sync the changes back to the client.
         }
-        else
-             Helper.println("Command not recognised.");
-
-        //Every command we will update the server on changes even if there were none.
-        ck.updateServer();
-
-        //when the server is updated it will sync the changes back to the client.
+        catch(Exception ex)
+        {
+            //do nothing since this will be when we shutdown.
+        }
     }
 
     private void feedPet()

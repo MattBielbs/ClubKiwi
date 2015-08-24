@@ -10,15 +10,8 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$USER_HOME$/db-derby-10.11.1.1-bin/lib" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$USER_HOME$/db-derby-10.11.1.1-bin/lib" recursive="false" />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" exported="" name="derby" level="project" />
+    <orderEntry type="library" exported="" name="jogl-all" level="project" />
+    <orderEntry type="library" exported="" name="gluegen-rt" level="project" />
   </component>
 </module>

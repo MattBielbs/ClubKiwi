@@ -1,18 +1,18 @@
 package com.clubkiwi;
 import com.clubkiwi.Character.*;
+import com.clubkiwi.GUI.GUI;
 import com.clubkiwiserver.Packet.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Main game class
  */
 public class ClubKiwi
 {
-    public CUI cui;
+    public GUI gui;
     public Connection conn;
     private boolean bLoggedin;
     private int userid;
@@ -31,7 +31,7 @@ public class ClubKiwi
         });
 
         conn = new Connection(this);
-        cui = new CUI(this);
+        gui = new GUI(this);
         Init();
     }
 
@@ -42,7 +42,7 @@ public class ClubKiwi
         HashMap<String, Double> map1 = new HashMap<String, Double>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
-        items.add(new Item(items.size(),"Worms", "| Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
+        items.add(new Item(items.size(), "Worms", "| Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
 
         HashMap<String, Double> map2 = new HashMap<String, Double>();
         map2.put("Hunger", 5.0);
@@ -54,9 +54,11 @@ public class ClubKiwi
         map3.put("Hunger", -5.0);
         map3.put("Mood", 10.0);
         items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, ItemType.Food, map3));
-        cui.DisplayIntro();
+
+        //Start the gui
+        Thread thread = new Thread(gui);
+        thread.start();
     }
-//i just ate my ___ lol yum yum
 
     public void OnPacketReceive(Packet p)
     {
@@ -83,25 +85,21 @@ public class ClubKiwi
 
     private void UpdateKiwi(Packet p)
     {
-        localKiwi.updateKiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
-        cui.MainCharacterScreen();
+        localKiwi.updateKiwi((String) p.getData(0), (Double) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9));
+        //cui.MainCharacterScreen();
     }
 
     private void AccountError(int id, String message)
     {
         Helper.println(message);
-        cui.DisplayWelcome();
+        //cui.DisplayWelcome();
     }
 
     private void LoadCharacter(Packet p)
     {
         Helper.println("Logged in!");
         localKiwi = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
-        cui.MainCharacterScreen();
-
-        //the command loop in a new thread.
-        Thread thread = new Thread(cui);
-        thread.start();
+        //cui.MainCharacterScreen();
     }
 
     //So the server can keep track of clients accurately
