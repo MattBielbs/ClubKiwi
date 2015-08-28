@@ -1,6 +1,11 @@
 package com.clubkiwi.GUI;
 
+import com.clubkiwi.Character.Kiwi;
 import com.clubkiwi.ClubKiwi;
+import com.clubkiwi.GUI.Controls.GUIControl;
+import com.clubkiwi.GUI.Controls.GUILabel;
+import com.clubkiwi.GUI.Controls.GUIWindow;
+import com.clubkiwi.Helper;
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
@@ -18,6 +23,7 @@ import com.jogamp.opengl.util.glsl.ShaderProgram;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 
 /**
  * Created by Mathew on 8/24/2015.
@@ -28,37 +34,45 @@ public class GUI implements Runnable, KeyListener, GLEventListener
     private GLWindow glWindow;
     private Animator animator;
     private TextRenderer renderer;
+    private ArrayList<GUIControl> controls;
+    public static Sprite sprite;
+    Kiwi test;
     public GUI(ClubKiwi ck)
     {
         this.ck = ck;
+        controls = new ArrayList<GUIControl>();
     }
 
     @Override
     public void run()
     {
-        //Create window
-        Display display = NewtFactory.createDisplay(null);
-        Screen screen = NewtFactory.createScreen(display, 0);
-        GLProfile glProfile = GLProfile.getMaxProgrammable(true);
-        GLCapabilities glCapabilities = new GLCapabilities(GLProfile.getMaxFixedFunc(true));
-        glWindow = GLWindow.create(screen, glCapabilities);
+            //Create window
+            Display display = NewtFactory.createDisplay(null);
+            Screen screen = NewtFactory.createScreen(display, 0);
+            GLProfile glProfile = GLProfile.getMaxProgrammable(true);
+            GLCapabilities glCapabilities = new GLCapabilities(GLProfile.getMaxFixedFunc(true));
+            glWindow = GLWindow.create(screen, glCapabilities);
 
-        glWindow.setTitle("ClubKiwi");
-        glWindow.setSize(800, 600);
-        glWindow.setPosition(50, 50);
-        glWindow.setUndecorated(false);
-        glWindow.setAlwaysOnTop(false);
-        glWindow.setFullscreen(false);
-        glWindow.setPointerVisible(true);
-        glWindow.confinePointer(false);
-        glWindow.setVisible(true);
+            glWindow.setTitle("ClubKiwi");
+            glWindow.setSize(800, 600);
+            glWindow.setPosition(50, 50);
+            glWindow.setUndecorated(false);
+            glWindow.setAlwaysOnTop(false);
+            glWindow.setFullscreen(false);
+            glWindow.setPointerVisible(true);
+            glWindow.confinePointer(false);
+            glWindow.setVisible(true);
 
-        //Set listeners
-        glWindow.addGLEventListener(this);
-        glWindow.addKeyListener(this);
+            //Set listeners
+            glWindow.addGLEventListener(this);
+            glWindow.addKeyListener(this);
+            animator = new Animator(glWindow);
+            animator.start();
 
-        animator = new Animator(glWindow);
-        animator.start();
+            //Keep alive for now
+            while(ClubKiwi.running)
+            {
+            }
     }
 
     //region OpenGL
@@ -66,19 +80,29 @@ public class GUI implements Runnable, KeyListener, GLEventListener
     public void init(GLAutoDrawable glAutoDrawable)
     {
         GL2 gl = glAutoDrawable.getGL().getGL2();
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
     /* initialize viewing values */
         gl.glMatrixMode(gl.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glOrtho(0.0f, 800, 600, 0.0f, 0.0f, 1.0f);
+        gl.glOrtho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, 1.0f);
 
-        renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12));
+        renderer = new TextRenderer(new Font("Default", Font.CENTER_BASELINE, 12));
+        renderer.setSmoothing(true);
+
+        // Change back to model view matrix.
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+
+        sprite = new Sprite("kiwi.png", "png");
+        test = new Kiwi("lol", 10,10,10,10,10,10,10,10,10);
     }
 
     @Override
     public void dispose(GLAutoDrawable glAutoDrawable)
     {
+        this.animator.stop();
+        this.renderer.dispose();
         this.ck.Shutdown();
     }
 
@@ -89,11 +113,8 @@ public class GUI implements Runnable, KeyListener, GLEventListener
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
-        GUIHelper.DrawRectangle(gl, 10, 10, 100, 100, Color.red);
-
-        GUIHelper.DrawText(renderer, "FUCK IT WORKS LOL", 10, 10, Color.GREEN);
-
-
+       // GUIHelper.DrawRectangle(gl, 10, 10, 100, 100, Color.red);
+        test.doDraw(gl, renderer);
         gl.glFlush();
     }
 
@@ -111,12 +132,8 @@ public class GUI implements Runnable, KeyListener, GLEventListener
     @Override
     public void keyPressed(KeyEvent keyEvent)
     {
-        if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE)
-        {
-            this.animator.stop();
-            this.glWindow.destroy();
-            this.ck.Shutdown();
-        }
+        if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE)
+            glWindow.destroy();
     }
 
     @Override

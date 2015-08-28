@@ -1,12 +1,18 @@
 package com.clubkiwi.Character;
 
+import com.clubkiwi.Drawable;
+import com.clubkiwi.GUI.GUI;
+import com.clubkiwi.GUI.Sprite;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 import java.util.HashMap;
 import java.util.Random;
 
 /**
  * Kiwi character class.
  */
-public class Kiwi
+public class Kiwi extends Drawable
 {
     //Attributes
     private String name;
@@ -21,8 +27,12 @@ public class Kiwi
     //Client things (not synced to server)
     private boolean sleeping;
 
+    //GUI things
+    private int x, y;
+
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
+        super(0, 0);
         this.name = name;
         this.health = health;
         this.money = money;
@@ -38,8 +48,10 @@ public class Kiwi
         this.sleeping = true;
     }
 
-    public void updateKiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
+    public void updateKiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy, int x, int y)
     {
+        this.x = x;
+        this.y = y;
         this.name = name;
         this.health = health;
         this.money = money;
@@ -297,5 +309,10 @@ public class Kiwi
                 " -<x.x)  \\\n" +
                 "    \\__/\n" +
                 "    _/I";
+    }
+
+    public void doDraw(GL2 gl, TextRenderer render)
+    {
+        GUI.sprite.Draw(gl, x, y);
     }
 }

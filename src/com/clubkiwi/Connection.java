@@ -4,6 +4,7 @@ import com.clubkiwiserver.Packet.Packet;
 import com.clubkiwiserver.Packet.PacketType;
 import com.clubkiwiserver.Packet.Serializer;
 
+import java.io.IOException;
 import java.net.*;
 
 /**
@@ -26,13 +27,11 @@ public class Connection implements Runnable
         {
             this.ck = ck;
             clientSocket = new DatagramSocket();
+            //clientSocket.setSoTimeout(1000);
             IPAddress = InetAddress.getByName("localhost");
+            //clientSocket.connect(IPAddress, 5678);
             s = new Serializer();
             receiveData = new byte[1024];
-
-            //Start this class in a new thread
-            Thread thread = new Thread(this);
-            thread.start();
         }
         catch(Exception ex)
         {
@@ -47,27 +46,26 @@ public class Connection implements Runnable
 
     public void run()
     {
+
         while (ClubKiwi.running)
         {
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
             try
             {
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
+
+                Packet p = s.Deserialize(receivePacket.getData());
+
+                if (p != null && p.getAllData().length != 0)
+                    ck.OnPacketReceive(p);
+
             }
-            catch(Exception ex)
+            catch (IOException ex)
             {
-                Helper.println("Lost connection to server");
-                ClubKiwi.running = false;
+                Helper.println("Unable to send packet to server");
             }
-
-            Packet p = s.Deserialize(receivePacket.getData());
-
-            if(p != null && p.getAllData().length != 0)
-                ck.OnPacketReceive(p);
         }
     }
-
 
     public void SendData(PacketType type, Object... objects)
     {
@@ -81,5 +79,10 @@ public class Connection implements Runnable
         {
             Helper.println("An error occurred while trying to send a message to the server.");
         }
+    }
+
+    public DatagramSocket getClientSocket()
+    {
+        return clientSocket;
     }
 }

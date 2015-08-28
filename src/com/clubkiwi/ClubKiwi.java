@@ -6,6 +6,9 @@ import com.clubkiwiserver.Packet.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Main game class
@@ -19,6 +22,7 @@ public class ClubKiwi
     private Kiwi localKiwi;
     public static boolean running;
     public static List<Item> items;
+    private Thread connThread, guiThread;
 
     public ClubKiwi()
     {
@@ -37,6 +41,8 @@ public class ClubKiwi
 
     public void Init()
     {
+        Helper.println("Starting ClubKiwi please wait...");
+
         //Items are gonna be created here for now but in future will be sent from the server on initial startup connecion.
         items = new ArrayList<Item>();
         HashMap<String, Double> map1 = new HashMap<String, Double>();
@@ -55,9 +61,13 @@ public class ClubKiwi
         map3.put("Mood", 10.0);
         items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, ItemType.Food, map3));
 
-        //Start the gui
-        Thread thread = new Thread(gui);
-        thread.start();
+        //Start the connection.
+        connThread = new Thread(conn);
+        connThread.start();
+
+        //Start the gui.
+        guiThread = new Thread(gui);
+        guiThread.start();
     }
 
     public void OnPacketReceive(Packet p)
@@ -85,7 +95,7 @@ public class ClubKiwi
 
     private void UpdateKiwi(Packet p)
     {
-        localKiwi.updateKiwi((String) p.getData(0), (Double) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9));
+        localKiwi.updateKiwi((String) p.getData(0), (Double) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9), 0, 0);
         //cui.MainCharacterScreen();
     }
 
@@ -105,7 +115,12 @@ public class ClubKiwi
     //So the server can keep track of clients accurately
     public void Shutdown()
     {
+        Helper.println("Shutting down...");
         conn.SendData(PacketType.Disconnect, 0);
+        ClubKiwi.running = false;
+       // conn.getClientSocket().close();
+        connThread.interrupt();
+        guiThread.interrupt();
     }
 
     public Kiwi getLocalKiwi()
