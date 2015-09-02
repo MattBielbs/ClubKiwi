@@ -2,6 +2,7 @@ package com.clubkiwi;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  * Created by Mathew on 8/25/2015.

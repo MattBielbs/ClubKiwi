@@ -1,12 +1,10 @@
 package com.clubkiwi.Character;
 
 import com.clubkiwi.Drawable;
-import com.clubkiwi.GUI.GUI;
-import com.clubkiwi.GUI.Sprite;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
 
-import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -29,6 +27,7 @@ public class Kiwi extends Drawable
 
     //GUI things
     private int x, y;
+    private Texture tex;
 
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
@@ -119,6 +118,17 @@ public class Kiwi extends Drawable
     {
         return sleeping;
     }
+
+    public Texture getTex()
+    {
+        return tex;
+    }
+
+    public void setTex(Texture tex)
+    {
+        this.tex = tex;
+    }
+
     //endregion
 
     //region Setters
@@ -313,6 +323,7 @@ public class Kiwi extends Drawable
 
     public void doDraw(GL2 gl, TextRenderer render)
     {
-        GUI.sprite.Draw(gl, x, y);
+        gl.glBindTexture(gl.GL_TEXTURE_2D, tex.getTextureObject());
+        gl.glDrawArrays(gl.GL_QUADS, 0, 4);
     }
 }

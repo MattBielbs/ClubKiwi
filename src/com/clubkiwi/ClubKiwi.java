@@ -17,12 +17,12 @@ public class ClubKiwi
 {
     public GUI gui;
     public Connection conn;
-    private boolean bLoggedin;
-    private int userid;
+    public CUI cui;
+
     private Kiwi localKiwi;
     public static boolean running;
     public static List<Item> items;
-    private Thread connThread, guiThread;
+    private Thread connThread, cuiThread;
 
     public ClubKiwi()
     {
@@ -36,6 +36,7 @@ public class ClubKiwi
 
         conn = new Connection(this);
         gui = new GUI(this);
+        cui = new CUI(this);
         Init();
     }
 
@@ -66,8 +67,8 @@ public class ClubKiwi
         connThread.start();
 
         //Start the gui.
-        guiThread = new Thread(gui);
-        guiThread.start();
+        cuiThread = new Thread(cui);
+        cuiThread.start();
     }
 
     public void OnPacketReceive(Packet p)
@@ -120,7 +121,7 @@ public class ClubKiwi
         ClubKiwi.running = false;
        // conn.getClientSocket().close();
         connThread.interrupt();
-        guiThread.interrupt();
+        cuiThread.interrupt();
     }
 
     public Kiwi getLocalKiwi()

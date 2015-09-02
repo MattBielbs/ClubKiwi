@@ -2,9 +2,6 @@ package com.clubkiwi.GUI;
 
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwi.ClubKiwi;
-import com.clubkiwi.GUI.Controls.GUIControl;
-import com.clubkiwi.GUI.Controls.GUILabel;
-import com.clubkiwi.GUI.Controls.GUIWindow;
 import com.clubkiwi.Helper;
 import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
@@ -19,8 +16,10 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.glsl.ShaderCode;
 import com.jogamp.opengl.util.glsl.ShaderProgram;
+import com.jogamp.opengl.util.texture.Texture;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -28,51 +27,42 @@ import java.util.ArrayList;
 /**
  * Created by Mathew on 8/24/2015.
  */
-public class GUI implements Runnable, KeyListener, GLEventListener
+public class GUI implements KeyListener, GLEventListener
 {
     private ClubKiwi ck;
     private GLWindow glWindow;
     private Animator animator;
     private TextRenderer renderer;
-    private ArrayList<GUIControl> controls;
-    public static Sprite sprite;
+
     Kiwi test;
+    private TextureLoader tl;
+
     public GUI(ClubKiwi ck)
     {
         this.ck = ck;
-        controls = new ArrayList<GUIControl>();
-    }
 
-    @Override
-    public void run()
-    {
-            //Create window
-            Display display = NewtFactory.createDisplay(null);
-            Screen screen = NewtFactory.createScreen(display, 0);
-            GLProfile glProfile = GLProfile.getMaxProgrammable(true);
-            GLCapabilities glCapabilities = new GLCapabilities(GLProfile.getMaxFixedFunc(true));
-            glWindow = GLWindow.create(screen, glCapabilities);
+        //Create window
+        Display display = NewtFactory.createDisplay(null);
+        Screen screen = NewtFactory.createScreen(display, 0);
+        GLProfile glProfile = GLProfile.getMaxProgrammable(true);
+        GLCapabilities glCapabilities = new GLCapabilities(GLProfile.getMaxFixedFunc(true));
+        glWindow = GLWindow.create(screen, glCapabilities);
 
-            glWindow.setTitle("ClubKiwi");
-            glWindow.setSize(800, 600);
-            glWindow.setPosition(50, 50);
-            glWindow.setUndecorated(false);
-            glWindow.setAlwaysOnTop(false);
-            glWindow.setFullscreen(false);
-            glWindow.setPointerVisible(true);
-            glWindow.confinePointer(false);
-            glWindow.setVisible(true);
+        glWindow.setTitle("ClubKiwi");
+        glWindow.setSize(800, 600);
+        glWindow.setPosition(50, 50);
+        glWindow.setUndecorated(false);
+        glWindow.setAlwaysOnTop(false);
+        glWindow.setFullscreen(false);
+        glWindow.setPointerVisible(true);
+        glWindow.confinePointer(false);
+        glWindow.setVisible(true);
 
-            //Set listeners
-            glWindow.addGLEventListener(this);
-            glWindow.addKeyListener(this);
-            animator = new Animator(glWindow);
-            animator.start();
-
-            //Keep alive for now
-            while(ClubKiwi.running)
-            {
-            }
+        //Set listeners
+        glWindow.addGLEventListener(this);
+        glWindow.addKeyListener(this);
+        animator = new Animator(glWindow);
+        animator.start();
     }
 
     //region OpenGL
@@ -81,6 +71,8 @@ public class GUI implements Runnable, KeyListener, GLEventListener
     {
         GL2 gl = glAutoDrawable.getGL().getGL2();
         gl.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+        tl = new TextureLoader(gl);
 
     /* initialize viewing values */
         gl.glMatrixMode(gl.GL_PROJECTION);
@@ -94,8 +86,16 @@ public class GUI implements Runnable, KeyListener, GLEventListener
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        sprite = new Sprite("kiwi.png", "png");
-        test = new Kiwi("lol", 10,10,10,10,10,10,10,10,10);
+        try
+        {
+            Texture lol = tl.getTexture("kiwi.png");
+            test = new Kiwi("lol", 10, 10, 10, 10, 10, 10, 10, 10, 10);
+            test.setTex(lol);
+        }
+        catch(IOException ex)
+        {
+            Helper.println("texture not found");
+        }
     }
 
     @Override
