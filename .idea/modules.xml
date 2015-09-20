@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ClubKiwi.iml" filepath="$PROJECT_DIR$/ClubKiwi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ClubKiwiServer/ClubKiwiServer.iml" filepath="$PROJECT_DIR$/../ClubKiwiServer/ClubKiwiServer.iml" />
     </modules>
   </component>
 </project>

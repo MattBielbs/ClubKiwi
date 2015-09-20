@@ -1,18 +1,29 @@
 package com.clubkiwi.Character;
 
-import com.clubkiwi.Drawable;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.texture.Texture;
+import com.clubkiwi.ClubKiwi;
+import com.clubkiwi.GUI;
+import com.clubkiwi.Helper;
+import com.clubkiwiserver.Packet.PacketType;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.RescaleOp;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
 
 /**
  * Kiwi character class.
  */
-public class Kiwi extends Drawable
+public class Kiwi extends JPanel
 {
     //Attributes
+    private int ID;
     private String name;
     private double health, money;
 
@@ -27,16 +38,15 @@ public class Kiwi extends Drawable
 
     //GUI things
     private int x, y;
-    private Texture tex;
+    private BufferedImage kiwiimage;
 
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
-        super(0, 0);
         this.name = name;
         this.health = health;
         this.money = money;
         this.strength = strength;
-        this.speed = speed;
+        this.speed = 100;
         this.flight = flight;
         this.swag = swag;
         this.hunger = hunger;
@@ -45,22 +55,44 @@ public class Kiwi extends Drawable
 
         //Client defaults
         this.sleeping = true;
+
+        //GUI things
+        this.x = 20;
+        this.y = 20;
+        try
+        {
+            kiwiimage = ImageIO.read(ClubKiwi.cldr.getResource("kiwi.png"));
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Could not load kiwi image");
+        }
+
+        setSize(100,70);
+        setOpaque(false);
+        setVisible(true);
     }
 
-    public void updateKiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy, int x, int y)
+    public void updateKiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
-        this.x = x;
-        this.y = y;
         this.name = name;
         this.health = health;
         this.money = money;
         this.strength = strength;
-        this.speed = speed;
+        //this.speed = speed;
         this.flight = flight;
         this.swag = swag;
         this.hunger = hunger;
         this.mood = mood;
         this.energy = energy;
+        repaint();
+    }
+
+    public void updateKiwiPos(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+        repaint();
     }
 
     //region Getters
@@ -119,14 +151,9 @@ public class Kiwi extends Drawable
         return sleeping;
     }
 
-    public Texture getTex()
+    public int getID()
     {
-        return tex;
-    }
-
-    public void setTex(Texture tex)
-    {
-        this.tex = tex;
+        return ID;
     }
 
     //endregion
@@ -221,6 +248,28 @@ public class Kiwi extends Drawable
         this.energy = energy;
     }
 
+    @Override
+    public int getX()
+    {
+        return x;
+    }
+
+    public void setX(int x)
+    {
+        this.x = x;
+    }
+
+    @Override
+    public int getY()
+    {
+        return y;
+    }
+
+    public void setY(int y)
+    {
+        this.y = y;
+    }
+
     public void giveItem(Item item)
     {
         //applies the effect to the kiwi
@@ -235,10 +284,74 @@ public class Kiwi extends Drawable
     {
         this.sleeping = sleeping;
     }
+
+    public void setID(int ID)
+    {
+        this.ID = ID;
+    }
+
     //endregion
 
+    public void moveUp()
+    {
+        if(y > 0)
+        {
+            this.y -= (speed / 10);
+            sendpos();
+        }
+    }
+
+    public void moveDown()
+    {
+        if(y < 800)
+        {
+            this.y += (speed / 10);
+            sendpos();
+        }
+    }
+
+    public void moveLeft()
+    {
+        if(x > 0)
+        {
+            this.x -= (speed / 10);
+            sendpos();
+        }
+    }
+
+    public void moveRight()
+    {
+        if(x < 600)
+        {
+            this.x += (speed / 10);
+            sendpos();
+        }
+    }
+
+    public void fly()
+    {
+        sendpos();
+    }
+
+    public void sendpos()
+    {
+        //send update for server
+        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
+    }
     //String things
+
     @Override
+    public String toString()
+    {
+        return "Kiwi{" +
+                "ID=" + ID +
+                ", name='" + name + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                "} " + super.toString();
+    }
+
+    /*
     public String toString()
     {
         return getKiwiGraphic() + "\n" + name + ": " +
@@ -251,7 +364,7 @@ public class Kiwi extends Drawable
                 "\nhunger=" + getPercent(getHunger(), 5) +
                 "\nmood  =" + getPercent(getMood(), 5) +
                 "\nenergy=" + getPercent(getEnergy(), 5);
-    }
+    }*/
 
     //Makes a nice [===] percent bar used in printing.
     private String getPercent(double value, int scale)
@@ -321,9 +434,18 @@ public class Kiwi extends Drawable
                 "    _/I";
     }
 
-    public void doDraw(GL2 gl, TextRenderer render)
+    //For drawing the kiwi
+    @Override
+    protected void paintComponent(Graphics g)
     {
-        gl.glBindTexture(gl.GL_TEXTURE_2D, tex.getTextureObject());
-        gl.glDrawArrays(gl.GL_QUADS, 0, 4);
+        Graphics2D g2d = (Graphics2D)g;
+        super.paintComponent(g);
+        setLocation(this.x, this.y);
+
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(name, 0, 8);
+        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), 0, 0, null);
     }
+
+
 }

@@ -21,6 +21,7 @@ public class CUI implements Runnable
     {
         this.ck = ck;
         scan = new Scanner(System.in);
+        DisplayIntro();
     }
 
     public void DisplayIntro()

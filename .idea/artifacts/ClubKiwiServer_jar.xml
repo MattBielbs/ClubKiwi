@@ -1,10 +1,8 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="ClubKiwi:jar2">
-    <output-path>$PROJECT_DIR$/out/artifacts/ClubKiwi_jar2</output-path>
-    <root id="archive" name="ClubKiwi.jar">
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/../ClubKiwiServer/src/META-INF/MANIFEST.MF" />
-      </element>
+  <artifact type="jar" build-on-make="true" name="ClubKiwiServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ClubKiwiServer_jar</output-path>
+    <root id="archive" name="ClubKiwiServer.jar">
+      <element id="module-output" name="ClubKiwiServer" />
       <element id="module-output" name="ClubKiwi" />
       <element id="extracted-dir" path="$USER_HOME$/db-derby-10.11.1.1-bin/lib/derby.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/db-derby-10.11.1.1-bin/lib/derby.war" path-in-jar="/" />
@@ -26,6 +24,7 @@
       <element id="extracted-dir" path="$USER_HOME$/db-derby-10.11.1.1-bin/lib/derbyLocale_zh_CN.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/db-derby-10.11.1.1-bin/lib/derbyLocale_zh_TW.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/db-derby-10.11.1.1-bin/lib/derbyoptionaltools.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/res" />
     </root>
   </artifact>
 </component>
