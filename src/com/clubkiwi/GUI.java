@@ -1,27 +1,14 @@
 package com.clubkiwi;
 
 import com.clubkiwi.Character.Kiwi;
-import com.clubkiwi.Character.MoveState;
-import com.clubkiwi.ClubKiwi;
-import com.clubkiwi.Helper;
 import com.clubkiwiserver.Packet.PacketType;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.html.ListView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.IOException;
-
-import java.net.URL;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 /**
@@ -29,8 +16,7 @@ import java.util.Collections;
  */
 public class GUI extends JFrame implements ActionListener, KeyListener
 {
-    private ClubKiwi ck;
-    private Button login, register, chatsend;
+    private final ClubKiwi ck;
     private JTextField username, chatbox;
     private JPasswordField password;
     private JList chatview;
@@ -43,10 +29,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         setSize(800, 600);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         this.ck = ck;
-        chathistory = new ArrayList<String>();
+        chathistory = new ArrayList<>();
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -60,13 +46,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         switch(e.getActionCommand())
         {
             case "Login":
-                ck.conn.SendData(PacketType.Login_C, username.getText(), password.getText());
+                ClubKiwi.conn.SendData(PacketType.Login_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Register":
-                ck.conn.SendData(PacketType.CreateUser_C, username.getText(), password.getText());
+                ClubKiwi.conn.SendData(PacketType.CreateUser_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Send":
-                ck.conn.SendData(PacketType.Chat_C, chatbox.getText());
+                ClubKiwi.conn.SendData(PacketType.Chat_C, chatbox.getText());
                 chatbox.setText("");
                 break;
         }
@@ -74,7 +60,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
     private void ShowLogin()
     {
-        setContentPane(new JLabel(new ImageIcon(ck.cldr.getResource("login.png"))));
+        setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("login.png"))));
 
         //Username
         Label ulabel = new Label("Username:");
@@ -92,13 +78,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         password.setLocation(200, 290);
 
         //Login button
-        login = new Button("Login");
+        Button login = new Button("Login");
         login.setSize(100, 20);
         login.setLocation(200, 320);
         login.addActionListener(this);
 
         //Register button
-        register = new Button("Register");
+        Button register = new Button("Register");
         register.setSize(100, 20);
         register.setLocation(320, 320);
         register.addActionListener(this);
@@ -118,7 +104,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
     public void ShowMain()
     {
-        setContentPane(new JLabel(new ImageIcon(ck.cldr.getResource("main.png"))));
+        setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("main.png"))));
 
         //Add the main gui controls
 
@@ -134,7 +120,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         chatbox.setSize(700, 20);
         chatbox.setVisible(true);
 
-        chatsend = new Button("Send");
+        Button chatsend = new Button("Send");
         chatsend.setLocation(700, 500);
         chatsend.setSize(100, 20);
         chatsend.addActionListener(this);
@@ -173,19 +159,19 @@ public class GUI extends JFrame implements ActionListener, KeyListener
             }
             if (e.getKeyCode() == KeyEvent.VK_UP)
             {
-                ck.getLocalKiwi().setMovestate(MoveState.Up);
+                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Up);
             }
             else if (e.getKeyCode() == KeyEvent.VK_LEFT)
             {
-                ck.getLocalKiwi().setMovestate(MoveState.Left);
+                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Left);
             }
             else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
             {
-                ck.getLocalKiwi().setMovestate(MoveState.Right);
+                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Right);
             }
             else if (e.getKeyCode() == KeyEvent.VK_DOWN)
             {
-                ck.getLocalKiwi().setMovestate(MoveState.Down);
+                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
             }
         }
     }
@@ -193,12 +179,12 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     @Override
     public void keyReleased(KeyEvent e)
     {
-        ck.getLocalKiwi().setMovestate(MoveState.None);
+        ck.getLocalKiwi().setMovestate(Kiwi.MoveState.None);
     }
 
     public void addChatMessage(String message)
     {
-        chathistory.add(0,message);
+        chathistory.add(0, message);
         chatview.setListData(chathistory.toArray());
         chatview.ensureIndexIsVisible(chathistory.size());
     }

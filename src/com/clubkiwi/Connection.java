@@ -14,9 +14,8 @@ public class Connection implements Runnable
 {
     private ClubKiwi ck;
     private DatagramSocket clientSocket;
-    private DatagramPacket sendPacket;
     private InetAddress IPAddress;
-    private byte[] sendData, receiveData;
+    private byte[] receiveData;
     private Serializer s;
     private Integer userid;
     private boolean bLoggedin;
@@ -71,18 +70,13 @@ public class Connection implements Runnable
     {
         try
         {
-            sendData = s.Serialize(type, objects);
-            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 5678);
+            byte[] sendData = s.Serialize(type, objects);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 5678);
             clientSocket.send(sendPacket);
         }
         catch(Exception ex)
         {
             Helper.println("An error occurred while trying to send a message to the server.");
         }
-    }
-
-    public DatagramSocket getClientSocket()
-    {
-        return clientSocket;
     }
 }

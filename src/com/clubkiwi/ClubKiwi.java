@@ -1,6 +1,5 @@
 package com.clubkiwi;
 import com.clubkiwi.Character.*;
-import com.clubkiwiserver.Client;
 import com.clubkiwiserver.Packet.*;
 
 import java.util.ArrayList;
@@ -38,27 +37,27 @@ public class ClubKiwi
         Init();
     }
 
-    public void Init()
+    private void Init()
     {
-        players = new ArrayList<Kiwi>();
+        players = new ArrayList<>();
 
         //Items are gonna be created here for now but in future will be sent from the server on initial startup connecion.
-        items = new ArrayList<Item>();
-        HashMap<String, Double> map1 = new HashMap<String, Double>();
+        items = new ArrayList<>();
+        HashMap<String, Double> map1 = new HashMap<>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
-        items.add(new Item(items.size(), "Worms", "| Worms add 20 hunger and 5 energy", 0.0, ItemType.Food, map1));
+        items.add(new Item(items.size(), "Worms", "| Worms add 20 hunger and 5 energy", 0.0, Item.ItemType.Food, map1));
 
-        HashMap<String, Double> map2 = new HashMap<String, Double>();
+        HashMap<String, Double> map2 = new HashMap<>();
         map2.put("Hunger", 5.0);
         map2.put("Energy", 5.0);
         map2.put("Mood", -5.0);
-        items.add(new Item(items.size(), "Fruit", "| Keep it fruity you groovy smoothie. Adds 5 hunger and energy", 0.0, ItemType.Food, map2));
+        items.add(new Item(items.size(), "Fruit", "| Keep it fruity you groovy smoothie. Adds 5 hunger and energy", 0.0, Item.ItemType.Food, map2));
 
-        HashMap<String, Double> map3 = new HashMap<String, Double>();
+        HashMap<String, Double> map3 = new HashMap<>();
         map3.put("Hunger", -5.0);
         map3.put("Mood", 10.0);
-        items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, ItemType.Food, map3));
+        items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, Item.ItemType.Food, map3));
 
         //Start the connection.
         connThread = new Thread(conn);
@@ -102,7 +101,10 @@ public class ClubKiwi
 
     private void addChatMessage(int idfrom, String message)
     {
-        gui.addChatMessage(getPlayerByID(idfrom).getName() + ": " + message);
+        if(idfrom == -1)
+            gui.addChatMessage("Server Message: " + message);
+        else
+            gui.addChatMessage(getPlayerByID(idfrom).getName() + ": " + message);
     }
 
     private void playerDisconnect(int id)
@@ -168,7 +170,7 @@ public class ClubKiwi
     }
 
     //So the server can keep track of clients accurately
-    public void Shutdown()
+    private void Shutdown()
     {
         Helper.println("Shutting down...");
         conn.SendData(PacketType.Disconnect_C, 0);
@@ -188,7 +190,7 @@ public class ClubKiwi
         conn.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getStrength(), localKiwi.getSpeed(), localKiwi.getFlight(), localKiwi.getSwag(), localKiwi.getHunger(), localKiwi.getMood(), localKiwi.getEnergy());
     }
 
-    public Kiwi getPlayerByID(int id)
+    private Kiwi getPlayerByID(int id)
     {
         for(Kiwi k : players)
         {

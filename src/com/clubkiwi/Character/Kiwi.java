@@ -1,27 +1,27 @@
 package com.clubkiwi.Character;
 
 import com.clubkiwi.ClubKiwi;
-import com.clubkiwi.GUI;
 import com.clubkiwi.Helper;
 import com.clubkiwiserver.Packet.PacketType;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.RescaleOp;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Random;
 /**
  * Kiwi character class.
  */
 public class Kiwi extends JPanel implements Runnable
 {
+    public enum MoveState
+    {
+        None,
+        Up,
+        Down,
+        Left,
+        Right,
+        Fly
+    }
     //Attributes
     private int ID;
     private String name;
@@ -305,7 +305,7 @@ public class Kiwi extends JPanel implements Runnable
     //endregion
 
 
-    public void sendpos()
+    private void sendpos()
     {
         //update the rotation
         if(this.rotateup)

@@ -1,21 +1,17 @@
 package com.clubkiwi;
 
 import com.clubkiwi.Character.Item;
-import com.clubkiwi.Character.ItemType;
-import com.clubkiwi.Character.Kiwi;
 import com.clubkiwiserver.Packet.PacketType;
-
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
  * Created by Mathew and trevor(kinda)  on 8/2/2015.
  */
-public class CUI implements Runnable
+class CUI implements Runnable
 {
-    private ClubKiwi ck;
-    private Scanner scan;
+    private final ClubKiwi ck;
+    private final Scanner scan;
 
     public CUI(ClubKiwi ck)
     {
@@ -24,7 +20,7 @@ public class CUI implements Runnable
         DisplayIntro();
     }
 
-    public void DisplayIntro()
+    private void DisplayIntro()
     {
         Helper.println(
                 " _____  _         _      _   __ _            _ \n" +
@@ -37,7 +33,7 @@ public class CUI implements Runnable
         Helper.println("=========================");
         DisplayWelcome();
     }
-    public void DisplayWelcome()
+    private void DisplayWelcome()
     {
         Helper.print("You need to have a registered account to play, type register to make one else type login (type help for instructions on how to play): ");
         String temp = scan.next();
@@ -92,7 +88,7 @@ public class CUI implements Runnable
         String username = scan.next();
         Helper.println("Enter your desired password");
         String password = scan.next();
-        ck.conn.SendData(PacketType.CreateUser_C, username, password);
+        ClubKiwi.conn.SendData(PacketType.CreateUser_C, username, password);
     }
 
 
@@ -102,7 +98,7 @@ public class CUI implements Runnable
         String username = scan.next();
         Helper.println("Enter your password");
         String password = scan.next();
-        ck.conn.SendData(PacketType.Login_C, username, password);
+        ClubKiwi.conn.SendData(PacketType.Login_C, username, password);
     }
 
     public void MainCharacterScreen()
@@ -119,7 +115,7 @@ public class CUI implements Runnable
         }
     }
 
-    public void inputLoop()
+    private void inputLoop()
     {
         try
         {
@@ -160,7 +156,7 @@ public class CUI implements Runnable
         //foods do different things.
         for(Item item : ClubKiwi.items)
         {
-          if(item.getType() == ItemType.Food)
+          if(item.getType() == Item.ItemType.Food)
           {
                 Helper.println(item.toString());
           }
@@ -173,7 +169,7 @@ public class CUI implements Runnable
             boolean found = false;
             for(Item item : ClubKiwi.items)
             {
-                if(item.getType() == ItemType.Food && item.getIndex() == food)
+                if(item.getType() == Item.ItemType.Food && item.getIndex() == food)
                 {
                     ck.getLocalKiwi().giveItem(item);
                     Helper.println("You gave your kiwi " + item.getsName());

@@ -7,11 +7,18 @@ import java.util.HashMap;
  */
 public class Item
 {
-    private int index;
-    private double dPrice;
-    private String sName, sDescription;
-    private ItemType type;
-    private HashMap<String, Double> effect;
+    public enum ItemType
+    {
+        Food,
+        Toy
+    }
+
+    private final int index;
+    private final double dPrice;
+    private final String sName;
+    private final String sDescription;
+    private final ItemType type;
+    private final HashMap<String, Double> effect;
 
     public Item(int index, String sName, String sDescription, double dPrice, ItemType type, HashMap<String, Double> effect)
     {

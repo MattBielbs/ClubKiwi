@@ -1,10 +1,10 @@
 package com.clubkiwi;
 
-public class Main {
+class Main {
 
     //Just the entry point here
     public static void main(String[] args) throws Exception
     {
-        ClubKiwi ck = new ClubKiwi();
+        new ClubKiwi();
     }
 }
