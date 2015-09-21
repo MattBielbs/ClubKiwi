@@ -1,6 +1,7 @@
 package com.clubkiwi;
 
 import com.clubkiwi.Character.Kiwi;
+import com.clubkiwi.Character.MoveState;
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.Helper;
 import com.clubkiwiserver.Packet.PacketType;
@@ -20,6 +21,7 @@ import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -117,24 +119,23 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     public void ShowMain()
     {
         setContentPane(new JLabel(new ImageIcon(ck.cldr.getResource("main.png"))));
-        add(ck.getLocalKiwi());
 
         //Add the main gui controls
 
         //Chatbox
         chatview = new JList();
-        chatview.setLocation(0, 700);
+        chatview.setLocation(0, 520);
         chatview.setSize(800, 80);
         chatview.setListData(chathistory.toArray());
-        chatview.setVisible(true);
+       // chatview.setVisible(true);
 
         chatbox = new JTextField();
-        chatbox.setLocation(0, 780);
+        chatbox.setLocation(0, 500);
         chatbox.setSize(700, 20);
         chatbox.setVisible(true);
 
         chatsend = new Button("Send");
-        chatsend.setLocation(700, 780);
+        chatsend.setLocation(700, 500);
         chatsend.setSize(100, 20);
         chatsend.addActionListener(this);
         chatsend.setVisible(true);
@@ -143,9 +144,14 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         add(chatbox);
         add(chatsend);
 
+        //Add local player
+        add(ck.getLocalKiwi());
+
         //Force refresh
         setSize(799, 599);
         setSize(800, 600);
+        setVisible(true);
+        revalidate();
         ingame = true;
     }
 
@@ -167,33 +173,34 @@ public class GUI extends JFrame implements ActionListener, KeyListener
             }
             if (e.getKeyCode() == KeyEvent.VK_UP)
             {
-                ck.getLocalKiwi().moveUp();
-
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT)
-            {
-                ck.getLocalKiwi().moveLeft();
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-            {
-                ck.getLocalKiwi().moveRight();
-            } else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-            {
-                ck.getLocalKiwi().moveDown();
+                ck.getLocalKiwi().setMovestate(MoveState.Up);
             }
-
-            ck.getLocalKiwi().repaint();
+            else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+            {
+                ck.getLocalKiwi().setMovestate(MoveState.Left);
+            }
+            else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+            {
+                ck.getLocalKiwi().setMovestate(MoveState.Right);
+            }
+            else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+            {
+                ck.getLocalKiwi().setMovestate(MoveState.Down);
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-
+        ck.getLocalKiwi().setMovestate(MoveState.None);
     }
 
     public void addChatMessage(String message)
     {
-        chathistory.add(message);
+        chathistory.add(0,message);
         chatview.setListData(chathistory.toArray());
+        chatview.ensureIndexIsVisible(chathistory.size());
     }
 
 

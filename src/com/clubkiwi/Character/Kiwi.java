@@ -8,6 +8,7 @@ import com.clubkiwiserver.Packet.PacketType;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RescaleOp;
@@ -16,11 +17,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
-
 /**
  * Kiwi character class.
  */
-public class Kiwi extends JPanel
+public class Kiwi extends JPanel implements Runnable
 {
     //Attributes
     private int ID;
@@ -39,6 +39,9 @@ public class Kiwi extends JPanel
     //GUI things
     private int x, y;
     private BufferedImage kiwiimage;
+    private MoveState movestate;
+    private double rotate;
+    private boolean rotateup;
 
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
@@ -55,17 +58,21 @@ public class Kiwi extends JPanel
 
         //Client defaults
         this.sleeping = true;
+        this.movestate = MoveState.None;
+        this.rotate = 0;
+        this.rotateup = true;
 
         //GUI things
         this.x = 20;
         this.y = 20;
+
         try
         {
             kiwiimage = ImageIO.read(ClubKiwi.cldr.getResource("kiwi.png"));
         }
         catch(Exception ex)
         {
-            System.out.println("Could not load kiwi image");
+            //System.out.println("Could not load kiwi image");
         }
 
         setSize(100,70);
@@ -290,51 +297,31 @@ public class Kiwi extends JPanel
         this.ID = ID;
     }
 
+    public void setMovestate(MoveState movestate)
+    {
+        this.movestate = movestate;
+    }
+
     //endregion
 
-    public void moveUp()
-    {
-        if(y > 0)
-        {
-            this.y -= (speed / 10);
-            sendpos();
-        }
-    }
-
-    public void moveDown()
-    {
-        if(y < 800)
-        {
-            this.y += (speed / 10);
-            sendpos();
-        }
-    }
-
-    public void moveLeft()
-    {
-        if(x > 0)
-        {
-            this.x -= (speed / 10);
-            sendpos();
-        }
-    }
-
-    public void moveRight()
-    {
-        if(x < 600)
-        {
-            this.x += (speed / 10);
-            sendpos();
-        }
-    }
-
-    public void fly()
-    {
-        sendpos();
-    }
 
     public void sendpos()
     {
+        //update the rotation
+        if(this.rotateup)
+        {
+            if(this.rotate == 0.08)
+                this.rotateup = false;
+
+            rotate+=0.01;
+        }
+        else
+        {
+            if(this.rotate == -0.08)
+                this.rotateup = true;
+
+            rotate -=0.01;
+        }
         //send update for server
         ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
     }
@@ -351,89 +338,6 @@ public class Kiwi extends JPanel
                 "} " + super.toString();
     }
 
-    /*
-    public String toString()
-    {
-        return getKiwiGraphic() + "\n" + name + ": " +
-                "\nhealth=" + getPercent(getHealth(), 5) +
-                // "\nmoney=" + money +
-                // ", strength=" + strength +
-                // ", speed=" + speed +
-                //  ", flight=" + flight +
-                //  ", swag=" + swag +
-                "\nhunger=" + getPercent(getHunger(), 5) +
-                "\nmood  =" + getPercent(getMood(), 5) +
-                "\nenergy=" + getPercent(getEnergy(), 5);
-    }*/
-
-    //Makes a nice [===] percent bar used in printing.
-    private String getPercent(double value, int scale)
-    {
-        String temp = "[";
-        for (int i = 0; i < 100; i += scale)
-        {
-            if (i < value)
-                temp += "=";
-            else
-                temp += " ";
-        }
-
-        temp += "] " + value + "%";
-
-        return temp;
-    }
-
-    private String getKiwiGraphic()
-    {
-        //Random int for animation.
-        Random rnd = new Random();
-        int rndint = rnd.nextInt(2);
-
-        if(health <= 0)
-        {
-            //Tombstone for dead kiwi.
-            return "       _____\n" +
-                    "     //  +  \\\n" +
-                    "    ||  RIP  |\n" +
-                    "    ||       |\n" +
-                    "    ||       |      " + getName() + "\n" +
-                    "   \\||/\\/\\//\\|/";
-        }
-
-        if (sleeping)
-        {
-            //Sleeping has closed eye and zzz.
-            return "   _ __ zzz\n" +
-                    " /  (->-\n" +
-                    " \\__/\n" +
-                    "  L\\_";
-        }
-
-        if (mood > 40)
-        {
-            //Left-Right facing animation style if happy.
-            if (rndint > 0)
-            {
-                return "   __ _\n" +
-                        "  /  ('>-\n" +
-                        "  \\__/\n" +
-                        "   L\\_";
-            }
-            else
-            {
-                return "   _ __\n" +
-                        " -<')  \\\n" +
-                        "    \\__/\n" +
-                        "    _/I";
-            }
-        }
-
-        return "   _ __\n" +
-                " -<x.x)  \\\n" +
-                "    \\__/\n" +
-                "    _/I";
-    }
-
     //For drawing the kiwi
     @Override
     protected void paintComponent(Graphics g)
@@ -442,10 +346,68 @@ public class Kiwi extends JPanel
         super.paintComponent(g);
         setLocation(this.x, this.y);
 
+        //Name
         g2d.setColor(Color.BLACK);
         g2d.drawString(name, 0, 8);
-        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), 0, 0, null);
+
+        //Kiwi
+        AffineTransform transform = new AffineTransform();
+        transform.translate(getWidth() / 2, getHeight() / 2);
+        transform.rotate(rotate);
+        transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
+        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
+
+        //Health bar
+        drawBar(g2d, getHealth(), Color.green, 0, 60, 100, 2);
+
+        //Hunger bar
+        drawBar(g2d, getHunger(), Color.orange, 0, 63, 100, 2);
     }
 
+    private void drawBar(Graphics2D g2d, double stat, Color color, int x, int y, int w, int h)
+    {
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x, y, w, h);
+        g2d.setColor(color);
+        g2d.fillRect(x, y, (int) stat, h);
+    }
 
+    @Override
+    public void run()
+    {
+        while(ClubKiwi.running)
+        {
+            try
+            {
+                Thread.sleep(20);
+                if (movestate == MoveState.Up && y > 0)
+                {
+                    this.y -= (speed / 20);
+                    sendpos();
+                }
+                if (movestate == MoveState.Down && y < 420)
+                {
+                    this.y += (speed / 20);
+                    sendpos();
+                }
+
+                if (movestate == MoveState.Left && x > 0)
+                {
+                    this.x -= (speed / 20);
+                    sendpos();
+                }
+
+                if (movestate == MoveState.Right && x < 700)
+                {
+                    this.x += (speed / 20);
+                    sendpos();
+                }
+                repaint();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+    }
 }

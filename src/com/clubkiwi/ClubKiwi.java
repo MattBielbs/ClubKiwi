@@ -158,6 +158,11 @@ public class ClubKiwi
         Helper.println("Logged in!");
         localKiwi = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
         localKiwi.setID((int)p.getData(10));
+        players.add(localKiwi);
+
+        Thread temp = new Thread(localKiwi);
+        temp.start();
+
         Helper.println("Starting ClubKiwi please wait...");
         gui.ShowMain();
     }
