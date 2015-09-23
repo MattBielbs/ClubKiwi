@@ -8,7 +8,6 @@ import java.awt.image.RGBImageFilter;
 
 /**
  * Created by Mathew on 7/28/2015.
- * To make life easy
  */
 public class Helper
 {

@@ -20,8 +20,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     private JTextField username, chatbox;
     private JPasswordField password;
     private JList chatview;
-    private ArrayList<String> chathistory;
-    private boolean ingame;
+    private ArrayList<String> chathistory = new ArrayList<>();
+    private boolean ingame = false;
 
     public GUI(ClubKiwi ck)
     {
@@ -32,11 +32,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         this.ck = ck;
-        chathistory = new ArrayList<>();
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        ingame = false;
         ShowLogin();
     }
 

@@ -34,14 +34,14 @@ public class Kiwi extends JPanel implements Runnable
     private double hunger, mood, energy;
 
     //Client things (not synced to server)
-    private boolean sleeping;
+    private boolean sleeping = true;
 
     //GUI things
     private int x, y;
     private BufferedImage kiwiimage;
-    private MoveState movestate;
-    private double rotate;
-    private boolean rotateup;
+    private MoveState movestate = MoveState.None;
+    private double rotate = 0;
+    private boolean rotateup = true;
 
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
@@ -56,12 +56,6 @@ public class Kiwi extends JPanel implements Runnable
         this.mood = mood;
         this.energy = energy;
 
-        //Client defaults
-        this.sleeping = true;
-        this.movestate = MoveState.None;
-        this.rotate = 0;
-        this.rotateup = true;
-
         //GUI things
         this.x = 20;
         this.y = 20;
@@ -75,7 +69,7 @@ public class Kiwi extends JPanel implements Runnable
             //System.out.println("Could not load kiwi image");
         }
 
-        setSize(100,70);
+        setSize(100,145);
         setOpaque(false);
         setVisible(true);
     }
@@ -310,17 +304,17 @@ public class Kiwi extends JPanel implements Runnable
         //update the rotation
         if(this.rotateup)
         {
-            if(this.rotate == 0.08)
+            if(this.rotate >= 0.08)
                 this.rotateup = false;
 
-            rotate+=0.01;
+            rotate+=0.02;
         }
         else
         {
-            if(this.rotate == -0.08)
+            if(this.rotate <= -0.08)
                 this.rotateup = true;
 
-            rotate -=0.01;
+            rotate -=0.02;
         }
         //send update for server
         ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
@@ -358,10 +352,10 @@ public class Kiwi extends JPanel implements Runnable
         g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
 
         //Health bar
-        drawBar(g2d, getHealth(), Color.green, 0, 60, 100, 2);
+        drawBar(g2d, getHealth(), Color.green, 0, 140, 100, 2);
 
         //Hunger bar
-        drawBar(g2d, getHunger(), Color.orange, 0, 63, 100, 2);
+        drawBar(g2d, getHunger(), Color.orange, 0, 143, 100, 2);
     }
 
     private void drawBar(Graphics2D g2d, double stat, Color color, int x, int y, int w, int h)

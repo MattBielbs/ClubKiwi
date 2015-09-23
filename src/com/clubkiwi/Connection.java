@@ -15,10 +15,8 @@ public class Connection implements Runnable
     private ClubKiwi ck;
     private DatagramSocket clientSocket;
     private InetAddress IPAddress;
-    private byte[] receiveData;
-    private Serializer s;
-    private Integer userid;
-    private boolean bLoggedin;
+    private byte[] receiveData = new byte[1024];
+    private Serializer s = new Serializer();
 
     public Connection(ClubKiwi ck)
     {
@@ -29,8 +27,6 @@ public class Connection implements Runnable
             //clientSocket.setSoTimeout(1000);
             IPAddress = InetAddress.getByName("localhost");
             //clientSocket.connect(IPAddress, 5678);
-            s = new Serializer();
-            receiveData = new byte[1024];
         }
         catch(Exception ex)
         {
@@ -38,10 +34,6 @@ public class Connection implements Runnable
         }
     }
 
-    public Integer getUserid()
-    {
-        return userid;
-    }
 
     public void run()
     {
