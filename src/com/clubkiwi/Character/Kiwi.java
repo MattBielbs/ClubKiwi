@@ -93,6 +93,7 @@ public class Kiwi extends JPanel implements Runnable
     {
         this.x = x;
         this.y = y;
+        rotate();
         repaint();
     }
 
@@ -301,6 +302,13 @@ public class Kiwi extends JPanel implements Runnable
 
     private void sendpos()
     {
+        rotate();
+        //send update for server
+        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
+    }
+
+    private void rotate()
+    {
         //update the rotation
         if(this.rotateup)
         {
@@ -316,8 +324,6 @@ public class Kiwi extends JPanel implements Runnable
 
             rotate -=0.02;
         }
-        //send update for server
-        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
     }
     //String things
 
@@ -342,7 +348,11 @@ public class Kiwi extends JPanel implements Runnable
 
         //Name
         g2d.setColor(Color.BLACK);
-        g2d.drawString(name, 0, 8);
+
+        //Centering
+        FontMetrics fm = g2d.getFontMetrics();
+        int ypos = fm.stringWidth(name);
+        g2d.drawString(name, 50 - (ypos / 2), 7);
 
         //Kiwi
         AffineTransform transform = new AffineTransform();

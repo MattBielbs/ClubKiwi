@@ -20,6 +20,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     private JTextField username, chatbox;
     private JPasswordField password;
     private JList chatview;
+    private Button chatsend;
     private ArrayList<String> chathistory = new ArrayList<>();
     private boolean ingame = false;
 
@@ -44,14 +45,20 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         switch(e.getActionCommand())
         {
             case "Login":
-                ClubKiwi.conn.SendData(PacketType.Login_C, username.getText(), String.valueOf(password.getPassword()));
+                    ClubKiwi.conn.SendData(PacketType.Login_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Register":
-                ClubKiwi.conn.SendData(PacketType.CreateUser_C, username.getText(), String.valueOf(password.getPassword()));
+                if(username.getText().isEmpty() || String.valueOf(password.getPassword()).isEmpty())
+                    JOptionPane.showMessageDialog(null, "You must enter a username and password.", "Error", JOptionPane.WARNING_MESSAGE);
+                else if (username.getText().length() >= 12)
+                    JOptionPane.showMessageDialog(null, "Your username must be no more than 12 characters", "Error", JOptionPane.WARNING_MESSAGE);
+                else
+                    ClubKiwi.conn.SendData(PacketType.CreateUser_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Send":
                 ClubKiwi.conn.SendData(PacketType.Chat_C, chatbox.getText());
                 chatbox.setText("");
+                requestFocus();
                 break;
         }
     }
@@ -74,6 +81,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         password = new JPasswordField();
         password.setSize(300, 20);
         password.setLocation(200, 290);
+        password.addKeyListener(this);
 
         //Login button
         Button login = new Button("Login");
@@ -117,8 +125,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         chatbox.setLocation(0, 500);
         chatbox.setSize(700, 20);
         chatbox.setVisible(true);
+        chatbox.addKeyListener(this);
 
-        Button chatsend = new Button("Send");
+        chatsend = new Button("Send");
         chatsend.setLocation(700, 500);
         chatsend.setSize(100, 20);
         chatsend.addActionListener(this);
@@ -148,36 +157,57 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     @Override
     public void keyPressed(KeyEvent e)
     {
-        if(ingame)
+        if (ingame)
         {
-            if(e.getKeyCode() == KeyEvent.VK_INSERT)
+            if (chatbox.isFocusOwner())
             {
-                for(Kiwi k : ck.players)
-                    System.out.println(k);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    actionPerformed(new ActionEvent(chatsend, 101, "Send"));
             }
-            if (e.getKeyCode() == KeyEvent.VK_UP)
+            else
             {
-                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Up);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    chatbox.requestFocus();
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_INSERT)
+                {
+                    for (Kiwi k : ck.players)
+                        System.out.println(k);
+                }
+                if (e.getKeyCode() == KeyEvent.VK_UP)
+                {
+                    ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Up);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Left);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                {
+                    ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Right);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
+                }
             }
-            else if (e.getKeyCode() == KeyEvent.VK_LEFT)
-            {
-                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Left);
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-            {
-                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Right);
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-            {
-                ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
-            }
+        }
+        else
+        {
+            //Login screen password box
+            if(e.getKeyCode() == KeyEvent.VK_ENTER && password.isFocusOwner())
+                actionPerformed(new ActionEvent(password, 100, "Login"));
+
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-        ck.getLocalKiwi().setMovestate(Kiwi.MoveState.None);
+        if(ingame)
+            ck.getLocalKiwi().setMovestate(Kiwi.MoveState.None);
     }
 
     public void addChatMessage(String message)
