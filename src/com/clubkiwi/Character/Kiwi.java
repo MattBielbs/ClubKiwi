@@ -70,6 +70,7 @@ public class Kiwi extends JPanel implements Runnable
         }
 
         setSize(100,145);
+        setLayout(null);
         setOpaque(false);
         setVisible(true);
     }
@@ -342,30 +343,37 @@ public class Kiwi extends JPanel implements Runnable
     @Override
     protected void paintComponent(Graphics g)
     {
-        Graphics2D g2d = (Graphics2D)g;
-        super.paintComponent(g);
-        setLocation(this.x, this.y);
+        if(isOnScreen())
+        {
+            Graphics2D g2d = (Graphics2D) g;
+            super.paintComponent(g);
+            int drawx = this.x - ClubKiwi.gui.getCamX();
+            int drawy = this.y - ClubKiwi.gui.getCamY();
 
-        //Name
-        g2d.setColor(Color.BLACK);
+            System.out.println("[KiwiDraw] " + drawx + " ," + drawy);
+            setLocation(drawx, drawy);
 
-        //Centering
-        FontMetrics fm = g2d.getFontMetrics();
-        int ypos = fm.stringWidth(name);
-        g2d.drawString(name, 50 - (ypos / 2), 7);
+            //Name
+            g2d.setColor(Color.BLACK);
 
-        //Kiwi
-        AffineTransform transform = new AffineTransform();
-        transform.translate(getWidth() / 2, getHeight() / 2);
-        transform.rotate(rotate);
-        transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
-        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
+            //Centering
+            FontMetrics fm = g2d.getFontMetrics();
+            int ypos = fm.stringWidth(name);
+            g2d.drawString(name, 50 - (ypos / 2), 7);
 
-        //Health bar
-        drawBar(g2d, getHealth(), Color.green, 0, 140, 100, 2);
+            //Kiwi
+            AffineTransform transform = new AffineTransform();
+            transform.translate(getWidth() / 2, getHeight() / 2);
+            transform.rotate(rotate);
+            transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
+            g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
 
-        //Hunger bar
-        drawBar(g2d, getHunger(), Color.orange, 0, 143, 100, 2);
+            //Health bar
+            drawBar(g2d, getHealth(), Color.green, 0, 140, 100, 2);
+
+            //Hunger bar
+            drawBar(g2d, getHunger(), Color.orange, 0, 143, 100, 2);
+        }
     }
 
     private void drawBar(Graphics2D g2d, double stat, Color color, int x, int y, int w, int h)
@@ -376,6 +384,18 @@ public class Kiwi extends JPanel implements Runnable
         g2d.fillRect(x, y, (int) stat, h);
     }
 
+    private boolean isOnScreen()
+    {
+        //could be simple but its hard to think
+        if(this.x < ClubKiwi.gui.getCamX() || this.x > (ClubKiwi.gui.getCamX() + 800))
+            return false;
+
+        if(this.y < ClubKiwi.gui.getCamY() || this.y > (ClubKiwi.gui.getCamY() + 500))
+            return false;
+
+        return true;
+    }
+
     @Override
     public void run()
     {
@@ -384,12 +404,14 @@ public class Kiwi extends JPanel implements Runnable
             try
             {
                 Thread.sleep(20);
+
+                //Move player
                 if (movestate == MoveState.Up && y > 0)
                 {
                     this.y -= (speed / 20);
                     sendpos();
                 }
-                if (movestate == MoveState.Down && y < 420)
+                if (movestate == MoveState.Down && y < ClubKiwi.gui.getCurrentRoom().getSizeY())
                 {
                     this.y += (speed / 20);
                     sendpos();
@@ -401,12 +423,19 @@ public class Kiwi extends JPanel implements Runnable
                     sendpos();
                 }
 
-                if (movestate == MoveState.Right && x < 700)
+                if (movestate == MoveState.Right && x < ClubKiwi.gui.getCurrentRoom().getSizeX())
                 {
                     this.x += (speed / 20);
                     sendpos();
                 }
-                repaint();
+
+                //Move camera
+                ClubKiwi.gui.setCamX(this.x/*  - 350*/);
+                ClubKiwi.gui.setCamY(this.y/* - 200*/);
+                ClubKiwi.gui.getCurrentRoom().repaint();
+
+
+               // repaint();
             }
             catch (Exception ex)
             {

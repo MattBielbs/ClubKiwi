@@ -3,6 +3,7 @@ package com.clubkiwi;
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,15 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     private ArrayList<String> chathistory = new ArrayList<>();
     private boolean ingame = false;
 
+
+    //Camera and map shit
+    //camera size is 800x500
+    private int camX, camY;
+    private Room currentRoom;
+
+    //Rooms
+    Room main, login;
+
     public GUI(ClubKiwi ck)
     {
         super("ClubKiwi");
@@ -31,8 +41,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
         setVisible(true);
         this.ck = ck;
+        main = new Room("Main", 2000, 2000, 0, 0, "bg.png");
+        login = new Room("Login", 800, 600, 0,0,"login.png");
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -65,8 +78,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
     private void ShowLogin()
     {
-        setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("login.png"))));
-
         //Username
         Label ulabel = new Label("Username:");
         ulabel.setSize(100, 10);
@@ -74,6 +85,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         username = new JTextField();
         username.setSize(300, 20);
         username.setLocation(200, 240);
+
         //Password
         Label plabel = new Label("Password:");
         plabel.setLocation(200, 270);
@@ -84,10 +96,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         password.addKeyListener(this);
 
         //Login button
-        Button login = new Button("Login");
-        login.setSize(100, 20);
-        login.setLocation(200, 320);
-        login.addActionListener(this);
+        Button loginb = new Button("Login");
+        loginb.setSize(100, 20);
+        loginb.setLocation(200, 320);
+        loginb.addActionListener(this);
 
         //Register button
         Button register = new Button("Register");
@@ -96,56 +108,70 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         register.addActionListener(this);
 
         //Add all
-        add(ulabel);
-        add(username);
-        add(plabel);
-        add(password);
-        add(login);
-        add(register);
+        login.add(ulabel);
+        login.add(username);
+        login.add(plabel);
+        login.add(password);
+        login.add(loginb);
+        login.add(register);
+
+        SwitchToRoom(login);
+    }
+
+    private void SwitchToRoom(Room room)
+    {
+        if(currentRoom != null)
+            remove(currentRoom);
+
+        add(room, BorderLayout.CENTER);
+        currentRoom = room;
+        camX = room.getStartX();
+        camY = room.getStaryY();
+        //revalidate();
 
         //Force refresh
         setSize(799,599);
-        setSize(800,600);
+        setSize(800, 600);
     }
 
     public void ShowMain()
     {
-        setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("main.png"))));
-
+       // setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("bg.png"))));
         //Add the main gui controls
 
         //Chatbox
+        JPanel footer   =   new JPanel(new BorderLayout());
         chatview = new JList();
-        chatview.setLocation(0, 520);
-        chatview.setSize(800, 80);
+       // chatview.setLocation(0, 520);
+        chatview.setPreferredSize(new Dimension(800, 80));
         chatview.setListData(chathistory.toArray());
        // chatview.setVisible(true);
 
         chatbox = new JTextField();
-        chatbox.setLocation(0, 500);
-        chatbox.setSize(700, 20);
+      //  chatbox.setLocation(0, 500);
+        chatbox.setPreferredSize(new Dimension(700, 20));
         chatbox.setVisible(true);
         chatbox.addKeyListener(this);
 
         chatsend = new Button("Send");
-        chatsend.setLocation(700, 500);
-        chatsend.setSize(100, 20);
+     //   chatsend.setLocation(700, 500);
+        chatsend.setPreferredSize(new Dimension(100, 20));
         chatsend.addActionListener(this);
         chatsend.setVisible(true);
+        footer.setMaximumSize(new Dimension(800, 100));
+        footer.add(chatview, BorderLayout.NORTH);
+        footer.add(chatbox, BorderLayout.WEST);
+        footer.add(chatsend, BorderLayout.EAST);
 
-        add(chatview);
-        add(chatbox);
-        add(chatsend);
+        SwitchToRoom(main);
+        add(footer, BorderLayout.SOUTH);
+
 
         //Add local player
-        add(ck.getLocalKiwi());
+        main.add(ck.getLocalKiwi());
 
-        //Force refresh
-        setSize(799, 599);
-        setSize(800, 600);
-        setVisible(true);
-        revalidate();
         ingame = true;
+        revalidate();
     }
 
     @Override
@@ -218,4 +244,28 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     }
 
 
+    public int getCamX()
+    {
+        return camX;
+    }
+
+    public int getCamY()
+    {
+        return camY;
+    }
+
+    public void setCamX(int camX)
+    {
+        this.camX = camX;
+    }
+
+    public void setCamY(int camY)
+    {
+        this.camY = camY;
+    }
+
+    public Room getCurrentRoom()
+    {
+        return currentRoom;
+    }
 }

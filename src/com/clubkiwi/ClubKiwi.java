@@ -111,7 +111,7 @@ public class ClubKiwi
     {
         Kiwi k = getPlayerByID(id);
         players.remove(k);
-        gui.remove(k);
+        gui.main.remove(k);
         gui.repaint();
     }
 
@@ -125,7 +125,7 @@ public class ClubKiwi
             temp = new Kiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9), (Double) p.getData(10));
             temp.setID((int) p.getData(0));
             players.add(temp);
-            gui.add(temp);
+            gui.main.add(temp);
         }
         else
         {
