@@ -63,8 +63,10 @@ public class Room extends JPanel
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-       //  setLocation(-ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY());
-        g.drawImage(bg, -ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY(), null);
-      //  g.drawImage(bg, 0,0, null);
+        g.translate(-ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY());
+       // setLocation(0,0);
+         //setLocation(-ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY());
+      //  g.drawImage(bg, -ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY(), null);
+        g.drawImage(bg, 0,0, null);
     }
 }

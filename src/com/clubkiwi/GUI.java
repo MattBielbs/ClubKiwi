@@ -136,25 +136,20 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
     public void ShowMain()
     {
-       // setContentPane(new JLabel(new ImageIcon(ClubKiwi.cldr.getResource("bg.png"))));
         //Add the main gui controls
 
         //Chatbox
-        JPanel footer   =   new JPanel(new BorderLayout());
+        JPanel footer = new JPanel(new BorderLayout());
         chatview = new JList();
-       // chatview.setLocation(0, 520);
         chatview.setPreferredSize(new Dimension(800, 80));
         chatview.setListData(chathistory.toArray());
-       // chatview.setVisible(true);
 
         chatbox = new JTextField();
-      //  chatbox.setLocation(0, 500);
         chatbox.setPreferredSize(new Dimension(700, 20));
         chatbox.setVisible(true);
         chatbox.addKeyListener(this);
 
         chatsend = new Button("Send");
-     //   chatsend.setLocation(700, 500);
         chatsend.setPreferredSize(new Dimension(100, 20));
         chatsend.addActionListener(this);
         chatsend.setVisible(true);
@@ -163,9 +158,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         footer.add(chatbox, BorderLayout.WEST);
         footer.add(chatsend, BorderLayout.EAST);
 
-        SwitchToRoom(main);
         add(footer, BorderLayout.SOUTH);
 
+        SwitchToRoom(main);
 
         //Add local player
         main.add(ck.getLocalKiwi());

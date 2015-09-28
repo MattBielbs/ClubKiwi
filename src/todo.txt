@@ -1,7 +1,6 @@
--sync movestate of other players (evey kiwi could run on a new thread that handles animation)
 -fix input to support multiple keys/movestates
--kiwi can move too far down
 -add new movestate (digging)
 -server controls adding of exp
 -convar exprates
 -actually make the game (lisa make background and worms)
+-players in rooms.

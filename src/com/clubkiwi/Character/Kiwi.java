@@ -37,7 +37,7 @@ public class Kiwi extends JPanel implements Runnable
     private boolean sleeping = true;
 
     //GUI things
-    private int x, y;
+    private int x, y, w, h;
     private BufferedImage kiwiimage;
     private MoveState movestate = MoveState.None;
     private double rotate = 0;
@@ -57,8 +57,10 @@ public class Kiwi extends JPanel implements Runnable
         this.energy = energy;
 
         //GUI things
-        this.x = 20;
-        this.y = 20;
+        this.x = 0;
+        this.y = 0;
+        this.w = 100;
+        this.h = 145;
 
         try
         {
@@ -69,7 +71,7 @@ public class Kiwi extends JPanel implements Runnable
             //System.out.println("Could not load kiwi image");
         }
 
-        setSize(100,145);
+        setSize(w,h);
         setLayout(null);
         setOpaque(false);
         setVisible(true);
@@ -343,37 +345,41 @@ public class Kiwi extends JPanel implements Runnable
     @Override
     protected void paintComponent(Graphics g)
     {
-        if(isOnScreen())
-        {
-            Graphics2D g2d = (Graphics2D) g;
-            super.paintComponent(g);
-            int drawx = this.x - ClubKiwi.gui.getCamX();
-            int drawy = this.y - ClubKiwi.gui.getCamY();
+        Graphics2D g2d = (Graphics2D) g;
+        super.paintComponent(g);
+        int drawx = this.x - ClubKiwi.gui.getCamX();
+        int drawy = this.y - ClubKiwi.gui.getCamY();
+        setLocation(drawx, drawy);
 
-            System.out.println("[KiwiDraw] " + drawx + " ," + drawy);
-            setLocation(drawx, drawy);
 
-            //Name
-            g2d.setColor(Color.BLACK);
+        //Kiwi
+        AffineTransform transform = new AffineTransform();
+        transform.translate(getWidth() / 2, getHeight() / 2);
+        transform.rotate(rotate);
+        transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
+        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
 
-            //Centering
-            FontMetrics fm = g2d.getFontMetrics();
-            int ypos = fm.stringWidth(name);
-            g2d.drawString(name, 50 - (ypos / 2), 7);
+        //Shadow
+        Font f = new Font("Arial", Font.BOLD, 14);
+        g.setFont(f);
+        FontMetrics fm = g2d.getFontMetrics();
+        int ypos = fm.stringWidth(name);
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(name, 50 - (ypos / 2), 15);
 
-            //Kiwi
-            AffineTransform transform = new AffineTransform();
-            transform.translate(getWidth() / 2, getHeight() / 2);
-            transform.rotate(rotate);
-            transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
-            g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
+        //Name
+        f = new Font("Arial", Font.BOLD, 12);
+        g.setFont(f);
+        fm = g2d.getFontMetrics();
+        ypos = fm.stringWidth(name);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(name, 50 - (ypos / 2), 15);
 
-            //Health bar
-            drawBar(g2d, getHealth(), Color.green, 0, 140, 100, 2);
+        //Health bar
+        drawBar(g2d, getHealth(), Color.green, 0, 140, 100, 2);
 
-            //Hunger bar
-            drawBar(g2d, getHunger(), Color.orange, 0, 143, 100, 2);
-        }
+        //Hunger bar
+        drawBar(g2d, getHunger(), Color.orange, 0, 143, 100, 2);
     }
 
     private void drawBar(Graphics2D g2d, double stat, Color color, int x, int y, int w, int h)
@@ -411,7 +417,7 @@ public class Kiwi extends JPanel implements Runnable
                     this.y -= (speed / 20);
                     sendpos();
                 }
-                if (movestate == MoveState.Down && y < ClubKiwi.gui.getCurrentRoom().getSizeY())
+                if (movestate == MoveState.Down && y < ClubKiwi.gui.getCurrentRoom().getSizeY() - h)
                 {
                     this.y += (speed / 20);
                     sendpos();
@@ -423,15 +429,15 @@ public class Kiwi extends JPanel implements Runnable
                     sendpos();
                 }
 
-                if (movestate == MoveState.Right && x < ClubKiwi.gui.getCurrentRoom().getSizeX())
+                if (movestate == MoveState.Right && x < ClubKiwi.gui.getCurrentRoom().getSizeX() - w)
                 {
                     this.x += (speed / 20);
                     sendpos();
                 }
 
                 //Move camera
-                ClubKiwi.gui.setCamX(this.x/*  - 350*/);
-                ClubKiwi.gui.setCamY(this.y/* - 200*/);
+                ClubKiwi.gui.setCamX(this.x - 400 + (w / 2));
+                ClubKiwi.gui.setCamY(this.y - 250 + (h / 2));
                 ClubKiwi.gui.getCurrentRoom().repaint();
 
 
