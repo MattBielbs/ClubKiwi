@@ -3,7 +3,6 @@ package com.clubkiwi;
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -116,6 +115,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
         login.add(register);
 
         SwitchToRoom(login);
+        username.requestFocus();
     }
 
     private void SwitchToRoom(Room room)
@@ -167,6 +167,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
         ingame = true;
         revalidate();
+        requestFocus();
     }
 
     @Override
@@ -197,19 +198,19 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                     for (Kiwi k : ck.players)
                         System.out.println(k);
                 }
-                if (e.getKeyCode() == KeyEvent.VK_UP)
+                if (e.getKeyCode() == KeyEvent.VK_UP && !ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Up))
                 {
                     ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Up);
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT && !ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Left))
                 {
                     ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Left);
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT && !ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Right))
                 {
                     ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Right);
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN && !ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Down))
                 {
                     ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
                 }
@@ -228,7 +229,24 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     public void keyReleased(KeyEvent e)
     {
         if(ingame)
-            ck.getLocalKiwi().setMovestate(Kiwi.MoveState.None);
+        {
+            if (e.getKeyCode() == KeyEvent.VK_UP && ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Up))
+            {
+                ck.getLocalKiwi().removeMovestate(Kiwi.MoveState.Up);
+            }
+            else if (e.getKeyCode() == KeyEvent.VK_LEFT && ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Left))
+            {
+                ck.getLocalKiwi().removeMovestate(Kiwi.MoveState.Left);
+            }
+            else if (e.getKeyCode() == KeyEvent.VK_RIGHT && ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Right))
+            {
+                ck.getLocalKiwi().removeMovestate(Kiwi.MoveState.Right);
+            }
+            else if (e.getKeyCode() == KeyEvent.VK_DOWN && ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Down))
+            {
+                ck.getLocalKiwi().removeMovestate(Kiwi.MoveState.Down);
+            }
+        }
     }
 
     public void addChatMessage(String message)
@@ -262,5 +280,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     public Room getCurrentRoom()
     {
         return currentRoom;
+    }
+
+    public boolean isIngame()
+    {
+        return ingame;
     }
 }

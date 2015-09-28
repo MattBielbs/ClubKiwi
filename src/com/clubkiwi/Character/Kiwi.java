@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 /**
  * Kiwi character class.
  */
@@ -39,7 +41,7 @@ public class Kiwi extends JPanel implements Runnable
     //GUI things
     private int x, y, w, h;
     private BufferedImage kiwiimage;
-    private MoveState movestate = MoveState.None;
+    private ArrayList<MoveState> MoveStates = new ArrayList<>();
     private double rotate = 0;
     private boolean rotateup = true;
 
@@ -297,7 +299,17 @@ public class Kiwi extends JPanel implements Runnable
 
     public void setMovestate(MoveState movestate)
     {
-        this.movestate = movestate;
+        this.MoveStates.add(movestate);
+    }
+
+    public void removeMovestate(MoveState movestate)
+    {
+        this.MoveStates.remove(movestate);
+    }
+
+    public boolean hasMoveState(MoveState movestate)
+    {
+        return this.MoveStates.contains(movestate);
     }
 
     //endregion
@@ -351,7 +363,6 @@ public class Kiwi extends JPanel implements Runnable
         int drawy = this.y - ClubKiwi.gui.getCamY();
         setLocation(drawx, drawy);
 
-
         //Kiwi
         AffineTransform transform = new AffineTransform();
         transform.translate(getWidth() / 2, getHeight() / 2);
@@ -360,15 +371,18 @@ public class Kiwi extends JPanel implements Runnable
         g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
 
         //Shadow
-        Font f = new Font("Arial", Font.BOLD, 14);
+        Font f = new Font("Arial", Font.BOLD, 15);
         g.setFont(f);
         FontMetrics fm = g2d.getFontMetrics();
         int ypos = fm.stringWidth(name);
         g2d.setColor(Color.BLACK);
-        g2d.drawString(name, 50 - (ypos / 2), 15);
+        g2d.drawString(name, 49 - (ypos / 2), 14);
+        g2d.drawString(name, 51 - (ypos / 2), 16);
+        g2d.drawString(name, 49 - (ypos / 2), 16);
+        g2d.drawString(name, 51 - (ypos / 2), 14);
 
         //Name
-        f = new Font("Arial", Font.BOLD, 12);
+        f = new Font("Arial", Font.BOLD, 14);
         g.setFont(f);
         fm = g2d.getFontMetrics();
         ypos = fm.stringWidth(name);
@@ -412,32 +426,39 @@ public class Kiwi extends JPanel implements Runnable
                 Thread.sleep(20);
 
                 //Move player
-                if (movestate == MoveState.Up && y > 0)
-                {
+                if (hasMoveState(MoveState.Up) && y > 0)
                     this.y -= (speed / 20);
-                    sendpos();
-                }
-                if (movestate == MoveState.Down && y < ClubKiwi.gui.getCurrentRoom().getSizeY() - h)
-                {
+
+                if (hasMoveState(MoveState.Down) && y < ClubKiwi.gui.getCurrentRoom().getSizeY() - h)
                     this.y += (speed / 20);
-                    sendpos();
-                }
 
-                if (movestate == MoveState.Left && x > 0)
-                {
+                if (hasMoveState(MoveState.Left) && x > 0)
                     this.x -= (speed / 20);
-                    sendpos();
-                }
 
-                if (movestate == MoveState.Right && x < ClubKiwi.gui.getCurrentRoom().getSizeX() - w)
-                {
+                if (hasMoveState(MoveState.Right) && x < ClubKiwi.gui.getCurrentRoom().getSizeX() - w)
                     this.x += (speed / 20);
+
+                if(MoveStates.size() > 0)
                     sendpos();
-                }
 
                 //Move camera
-                ClubKiwi.gui.setCamX(this.x - 400 + (w / 2));
-                ClubKiwi.gui.setCamY(this.y - 250 + (h / 2));
+                int camx = this.x - 400 + (w / 2);
+                int camy = this.y - 250 + (h / 2);
+
+                if(camx < 0)
+                    camx = 0;
+
+                if(camy < 0)
+                    camy = 0;
+
+                if(camx > ClubKiwi.gui.getCurrentRoom().getSizeX() - 800)
+                    camx = ClubKiwi.gui.getCurrentRoom().getSizeX() - 800;
+
+                if(camy > ClubKiwi.gui.getCurrentRoom().getSizeY() - 500)
+                    camy = ClubKiwi.gui.getCurrentRoom().getSizeY() - 500;
+
+                ClubKiwi.gui.setCamX(camx);
+                ClubKiwi.gui.setCamY(camy);
                 ClubKiwi.gui.getCurrentRoom().repaint();
 
 
