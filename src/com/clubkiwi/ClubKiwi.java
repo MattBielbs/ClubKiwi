@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ClubKiwi
 {
-    private Kiwi localKiwi;
+    private static Kiwi localKiwi;
     private Thread connThread;
 
     public static GUI gui;
@@ -65,23 +65,23 @@ public class ClubKiwi
         HashMap<String, Double> map1 = new HashMap<>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
-        items.add(new Item(items.size(), "Worms", "| Worms add 20 hunger and 5 energy", 0.0, Item.ItemType.Food, map1));
+        items.add(new Item(items.size(), "Worms", "Worms add 20 hunger and 5 energy", 0.0, Item.ItemType.Food, map1));
 
         HashMap<String, Double> map2 = new HashMap<>();
         map2.put("Hunger", 5.0);
         map2.put("Energy", 5.0);
         map2.put("Mood", -5.0);
-        items.add(new Item(items.size(), "Fruit", "| Keep it fruity you groovy smoothie. Adds 5 hunger and energy", 0.0, Item.ItemType.Food, map2));
+        items.add(new Item(items.size(), "Fruit", "Keep it fruity you groovy smoothie.", 0.0, Item.ItemType.Food, map2));
 
         HashMap<String, Double> map3 = new HashMap<>();
         map3.put("Hunger", -5.0);
         map3.put("Mood", 10.0);
-        items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, Item.ItemType.Food, map3));
+        items.add(new Item(items.size(), "Grubz", "Doesn't taste very good but makes you happy.", 0.0, Item.ItemType.Food, map3));
 
         HashMap<String, Double> map4 = new HashMap<>();
         map4.put("Health", 10.0);
         map4.put("Hunger", 10.0);
-        items.add(new Item(items.size(), "BandAid", "| fixes you up", 0.0, Item.ItemType.Food, map4));
+        items.add(new Item(items.size(), "BandAid", "Fixes you up", 0.0, Item.ItemType.Food, map4));
     }
 
     public void OnPacketReceive(Packet p)
@@ -131,7 +131,7 @@ public class ClubKiwi
     {
         Kiwi k = getPlayerByID(id);
         players.remove(k);
-        gui.main.remove(k);
+        k.removeKiwi();
         gui.repaint();
     }
 
@@ -145,7 +145,8 @@ public class ClubKiwi
             temp = new Kiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9), (Double) p.getData(10));
             temp.setID((int) p.getData(0));
             players.add(temp);
-            gui.main.add(temp);
+        //    gui.main.add(temp);
+
         }
         else
         {
@@ -160,7 +161,7 @@ public class ClubKiwi
 
         //if this is null then player hasnt connected and thats gonna be a problem
         if (temp != null)
-            temp.updateKiwiPos((int) p.getData(1), (int) p.getData(2));
+            temp.updateKiwiPos((int) p.getData(1), (int) p.getData(2), (int)p.getData(3));
     }
 
     private void UpdateKiwi(Packet p)
@@ -186,7 +187,7 @@ public class ClubKiwi
         temp.start();
 
         Helper.println("Starting ClubKiwi please wait...");
-        gui.ShowMain();
+        gui.StartGameView();
     }
 
     //So the server can keep track of clients accurately
@@ -199,7 +200,7 @@ public class ClubKiwi
         connThread.interrupt();
     }
 
-    public Kiwi getLocalKiwi()
+    public static Kiwi getLocalKiwi()
     {
         return localKiwi;
     }

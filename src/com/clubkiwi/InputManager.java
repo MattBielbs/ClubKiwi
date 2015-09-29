@@ -68,6 +68,16 @@ public class InputManager implements KeyEventDispatcher
                     ck.inv.addItemToInventory(ck.items.get(3));
                 }
 
+                if(keycode == KeyEvent.VK_HOME)
+                {
+                    ck.gui.SwitchToRoom(ck.gui.room2);
+                }
+
+                if(keycode == KeyEvent.VK_END)
+                {
+                    ck.gui.SwitchToRoom(ck.gui.main);
+                }
+
                 //Keyboard either controls the inventory or the kiwi
                 if(ck.inv.isVisible())
                 {

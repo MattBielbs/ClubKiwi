@@ -10,12 +10,14 @@ import java.awt.image.BufferedImage;
  */
 public class Room extends JLayeredPane
 {
+    private int ID;
     private String name;
     private int sizeX, sizeY, startX, staryY;
     private BufferedImage bg;
 
-    public Room(String name, int sizeX, int sizeY, int startX, int startY, String bg)
+    public Room(int ID, String name, int sizeX, int sizeY, int startX, int startY, String bg)
     {
+        this.ID = ID;
         this.name = name;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -23,7 +25,7 @@ public class Room extends JLayeredPane
         this.staryY = startY;
         setLayout(null);
         setSize(new Dimension(800, 500));
-        setLocation(0,0);
+        setLocation(0, 0);
 
         try
         {
@@ -58,6 +60,11 @@ public class Room extends JLayeredPane
     public int getSizeY()
     {
         return sizeY;
+    }
+
+    public int getID()
+    {
+        return ID;
     }
 
     @Override

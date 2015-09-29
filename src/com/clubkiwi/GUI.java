@@ -31,11 +31,12 @@ public class GUI extends JFrame implements ActionListener
     private Room currentRoom;
 
     //Rooms
-    Room main, login;
+    public Room main, login, room2;
+    public ArrayList<Room> rooms = new ArrayList<>();
 
     public GUI(ClubKiwi ck)
     {
-        super("ClubKiwi");
+        super("ClubKiwi | Pretty much the best game (not a clubpenguin ripoff)");
         setSize(800, 600);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -75,14 +76,19 @@ public class GUI extends JFrame implements ActionListener
 
     private void loadRooms()
     {
-        main = new Room("Main", 2000, 2000, 0, 0, "bg.png");
-        login = new Room("Login", 800, 600, 0,0,"login.png");
+        main = new Room(0, "Main", 2000, 2000, 0, 0, "bg.png");
+        login = new Room(1, "Login", 800, 600, 0,0,"login.png");
+        room2 = new Room(2, "Room2", 1024, 768, 0, 0, "bg2.png");
+
+        rooms.add(main);
+        rooms.add(login);
+        rooms.add(room2);
     }
 
     private void ShowLogin()
     {
         //Username
-        Label ulabel = new Label("Username:");
+        JLabel ulabel = new JLabel("Username:");
         ulabel.setSize(100, 10);
         ulabel.setLocation(200, 220);
         username = new JTextField();
@@ -90,7 +96,7 @@ public class GUI extends JFrame implements ActionListener
         username.setLocation(200, 240);
 
         //Password
-        Label plabel = new Label("Password:");
+        JLabel plabel = new JLabel("Password:");
         plabel.setLocation(200, 270);
         plabel.setSize(100,10);
         password = new JPasswordField();
@@ -109,6 +115,12 @@ public class GUI extends JFrame implements ActionListener
         register.setLocation(320, 320);
         register.addActionListener(this);
 
+        //Little text
+        JLabel text = new JLabel("Developed By Mathew Bielby, Trevor Hastelow and Jung Wook Lee. Graphics by Lisa Crabtree");
+        text.setLocation(110,550);
+        text.setSize(600, 20);
+        text.setBackground(Color.WHITE);
+
         //Add all
         login.add(ulabel);
         login.add(username);
@@ -116,12 +128,13 @@ public class GUI extends JFrame implements ActionListener
         login.add(password);
         login.add(loginb);
         login.add(register);
+        login.add(text);
 
         SwitchToRoom(login);
         username.requestFocus();
     }
 
-    private void SwitchToRoom(Room room)
+    public void SwitchToRoom(Room room)
     {
         if(currentRoom != null)
             remove(currentRoom);
@@ -132,15 +145,28 @@ public class GUI extends JFrame implements ActionListener
         camY = room.getStaryY();
         //revalidate();
 
+        //swap the localkiwi
+        if(ck.getLocalKiwi() != null)
+            ck.getLocalKiwi().swaproom(currentRoom);
+
+        //add the inventory
+        boolean hasinv = false;
+        for(Component c : room.getComponents())
+        {
+            if(c == ck.inv)
+                hasinv = true;
+        }
+
+        if(!hasinv)
+            room.add(ck.inv, 0);
+
         //Force refresh
-        setSize(799,599);
+        setSize(799, 599);
         setSize(800, 600);
     }
 
-    public void ShowMain()
+    public void StartGameView()
     {
-        //Add the main gui controls
-
         //Chatbox
         JPanel footer = new JPanel(new BorderLayout());
         chatview = new JList();
@@ -164,15 +190,22 @@ public class GUI extends JFrame implements ActionListener
 
         SwitchToRoom(main);
 
+        //Only add player to start room it will move itself with switchtoroom.
+       // main.add(ck.getLocalKiwi());
+        ingame = true;
+        revalidate();
+    }
+
+    public void ShowMain()
+    {
+        SwitchToRoom(main);
+
         //Add local player
         main.add(ck.getLocalKiwi(), 1);
 
-        //Add inventory
-        main.add(ck.inv, 0);
 
-        ingame = true;
-        revalidate();
-        requestFocus();
+
+
     }
 
     public void addChatMessage(String message)

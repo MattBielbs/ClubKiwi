@@ -2,6 +2,7 @@ package com.clubkiwi.Character;
 
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.Helper;
+import com.clubkiwi.Room;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -44,6 +45,7 @@ public class Kiwi extends JPanel implements Runnable
     private ArrayList<MoveState> MoveStates = new ArrayList<>();
     private double rotate = 0;
     private boolean rotateup = true;
+    private int currentroom;
 
     public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
     {
@@ -66,7 +68,9 @@ public class Kiwi extends JPanel implements Runnable
 
         try
         {
+            //These fail on the server so it dosnt matter
             kiwiimage = ImageIO.read(ClubKiwi.cldr.getResource("kiwi.png"));
+            swaproom(ClubKiwi.gui.main);
         }
         catch(Exception ex)
         {
@@ -94,10 +98,29 @@ public class Kiwi extends JPanel implements Runnable
         repaint();
     }
 
-    public void updateKiwiPos(int x, int y)
+    public void swaproom(Room room)
+    {
+        //Swap the kiwi to the new room
+        ClubKiwi.gui.rooms.get(currentroom).remove(this);
+        room.add(this);
+        currentroom = room.getID();
+
+        //Move player to start pos
+        this.x = room.getStartX();
+        this.y = room.getStaryY();
+
+        //Send your pos to server.
+        if(this == ClubKiwi.getLocalKiwi())
+            sendpos();
+    }
+
+    public void updateKiwiPos(int x, int y, int currentroom)
     {
         this.x = x;
         this.y = y;
+        if(this.currentroom != currentroom)
+            swaproom(ClubKiwi.gui.rooms.get(currentroom));
+
         rotate();
         repaint();
     }
@@ -161,6 +184,11 @@ public class Kiwi extends JPanel implements Runnable
     public int getID()
     {
         return ID;
+    }
+
+    public int getCurrentroom()
+    {
+        return currentroom;
     }
 
     //endregion
@@ -277,6 +305,13 @@ public class Kiwi extends JPanel implements Runnable
         this.y = y;
     }
 
+    public void setCurrentroom(int currentroom)
+    {
+        this.currentroom = currentroom;
+    }
+
+    //endregion
+
     public void giveItem(Item item)
     {
         //applies the effect to the kiwi
@@ -326,14 +361,14 @@ public class Kiwi extends JPanel implements Runnable
         return this.MoveStates.contains(movestate);
     }
 
-    //endregion
+
 
 
     private void sendpos()
     {
         rotate();
         //send update for server
-        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y);
+        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y, currentroom);
     }
 
     private void rotate()
@@ -354,7 +389,16 @@ public class Kiwi extends JPanel implements Runnable
             rotate -=0.02;
         }
     }
+
+    public void removeKiwi()
+    {
+        ClubKiwi.gui.rooms.get(currentroom).remove(this);
+        ClubKiwi.gui.rooms.get(currentroom).add(new PoofEffect(this.x, this.y));
+    }
+
+
     //String things
+
 
     @Override
     public String toString()
@@ -364,6 +408,7 @@ public class Kiwi extends JPanel implements Runnable
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
+                ", currentroom=" + currentroom +
                 "} ";
     }
 
