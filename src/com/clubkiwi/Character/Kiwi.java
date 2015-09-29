@@ -280,11 +280,20 @@ public class Kiwi extends JPanel implements Runnable
     public void giveItem(Item item)
     {
         //applies the effect to the kiwi
+        this.setHealth(this.getHealth() + item.getEffect().getOrDefault("Health", 0.0));
         this.setHunger(this.getHunger() + item.getEffect().getOrDefault("Hunger", 0.0));
         this.setMood(this.getMood() + item.getEffect().getOrDefault(("Mood"), 0.0));
         this.setEnergy(this.getEnergy() + item.getEffect().getOrDefault("Energy", 0.0));
         this.setSpeed(this.getSpeed() + item.getEffect().getOrDefault("Speed", 0.0));
         this.setStrength(this.getStrength() + item.getEffect().getOrDefault("Strength", 0.0));
+
+        //Tell the server
+        updateServer();
+    }
+
+    public void updateServer()
+    {
+        ClubKiwi.conn.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getStrength(), getSpeed(), getFlight(), getSwag(), getHunger(), getMood(), getEnergy());
     }
 
     public void setSleeping(boolean sleeping)
@@ -305,6 +314,11 @@ public class Kiwi extends JPanel implements Runnable
     public void removeMovestate(MoveState movestate)
     {
         this.MoveStates.remove(movestate);
+    }
+
+    public void clearMoveStates()
+    {
+        this.MoveStates.clear();
     }
 
     public boolean hasMoveState(MoveState movestate)
@@ -350,7 +364,7 @@ public class Kiwi extends JPanel implements Runnable
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
-                "} " + super.toString();
+                "} ";
     }
 
     //For drawing the kiwi
@@ -404,18 +418,6 @@ public class Kiwi extends JPanel implements Runnable
         g2d.fillRect(x, y, (int) stat, h);
     }
 
-    private boolean isOnScreen()
-    {
-        //could be simple but its hard to think
-        if(this.x < ClubKiwi.gui.getCamX() || this.x > (ClubKiwi.gui.getCamX() + 800))
-            return false;
-
-        if(this.y < ClubKiwi.gui.getCamY() || this.y > (ClubKiwi.gui.getCamY() + 500))
-            return false;
-
-        return true;
-    }
-
     @Override
     public void run()
     {
@@ -459,6 +461,8 @@ public class Kiwi extends JPanel implements Runnable
 
                 ClubKiwi.gui.setCamX(camx);
                 ClubKiwi.gui.setCamY(camy);
+
+                ClubKiwi.gui.getCurrentRoom().revalidate();
                 ClubKiwi.gui.getCurrentRoom().repaint();
 
 

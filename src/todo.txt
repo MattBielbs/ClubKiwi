@@ -1,3 +1,4 @@
+-poof effect on disconnect
 -add new movestate (digging)
 -server controls adding of exp
 -convar exprates

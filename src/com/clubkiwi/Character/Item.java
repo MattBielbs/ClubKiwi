@@ -61,6 +61,12 @@ public class Item
     }
 
     @Override
+    public boolean equals(Object obj)
+    {
+        return (this.index == ((Item)obj).index);
+    }
+
+    @Override
     public String toString()
     {
         return "(" + index + ") " + type + ": "  + sName + " " + sDescription;

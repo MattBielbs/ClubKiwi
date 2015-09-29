@@ -11,15 +11,18 @@ import java.util.List;
  */
 public class ClubKiwi
 {
+    private Kiwi localKiwi;
+    private Thread connThread;
+
     public static GUI gui;
     public static Connection conn;
-
-    private Kiwi localKiwi;
+    public static Inventory inv;
+    public static InputManager inputManager;
     public static boolean running;
-    public static List<Item> items;
-    private Thread connThread, cuiThread;
-    public ArrayList<Kiwi> players;
     public static ClassLoader cldr;
+
+    public ArrayList<Kiwi> players;
+    public ArrayList<Item> items;
 
     public ClubKiwi()
     {
@@ -32,17 +35,33 @@ public class ClubKiwi
             }
         });
 
-        conn = new Connection(this);
-        gui = new GUI(this);
         Init();
     }
 
     private void Init()
     {
-        players = new ArrayList<>();
+        //Create instances
+        conn = new Connection(this);
+        inputManager = new InputManager(this);
+        inv = new Inventory(this);
+        //GUI last.
+        gui = new GUI(this);
 
-        //Items are gonna be created here for now but in future will be sent from the server on initial startup connecion.
+        //Init lists
+        players = new ArrayList<>();
         items = new ArrayList<>();
+
+        initItems();
+
+
+        //Start the connection.
+        connThread = new Thread(conn);
+        connThread.start();
+    }
+
+    private void initItems()
+    {
+        //could be sent from server to add items remotely.
         HashMap<String, Double> map1 = new HashMap<>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
@@ -59,9 +78,10 @@ public class ClubKiwi
         map3.put("Mood", 10.0);
         items.add(new Item(items.size(), "Grubz", "| Doesn't taste very good but makes your kiwi happier. Sacrifices hunger for mood", 0.0, Item.ItemType.Food, map3));
 
-        //Start the connection.
-        connThread = new Thread(conn);
-        connThread.start();
+        HashMap<String, Double> map4 = new HashMap<>();
+        map4.put("Health", 10.0);
+        map4.put("Hunger", 10.0);
+        items.add(new Item(items.size(), "BandAid", "| fixes you up", 0.0, Item.ItemType.Food, map4));
     }
 
     public void OnPacketReceive(Packet p)

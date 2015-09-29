@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by Mathew on 9/28/2015.
  */
-public class Room extends JPanel
+public class Room extends JLayeredPane
 {
     private String name;
     private int sizeX, sizeY, startX, staryY;
@@ -24,6 +24,7 @@ public class Room extends JPanel
         setLayout(null);
         setSize(new Dimension(800, 500));
         setLocation(0,0);
+
         try
         {
             this.bg = ImageIO.read(ClubKiwi.cldr.getResource(bg));
@@ -63,9 +64,17 @@ public class Room extends JPanel
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        if(ClubKiwi.gui.isIngame())
-            g.translate(-ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY());
 
-        g.drawImage(bg, 0,0, null);
+        try //this exception is not thrown in debug mode and does not effect the program at all.
+        {
+            if (ClubKiwi.gui.isIngame())
+                g.translate(-ClubKiwi.gui.getCamX(), -ClubKiwi.gui.getCamY());
+
+            g.drawImage(bg, 0, 0, null);
+        }
+        catch(Exception ex)
+        {
+
+        }
     }
 }

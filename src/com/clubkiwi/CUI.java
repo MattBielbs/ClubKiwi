@@ -153,6 +153,7 @@ class CUI implements Runnable
 
     private void feedPet()
     {
+        /*
         //foods do different things.
         for(Item item : ClubKiwi.items)
         {
@@ -160,14 +161,14 @@ class CUI implements Runnable
           {
                 Helper.println(item.toString());
           }
-        }
+        }*/
 
         Helper.print("Enter the id of the food you wish to give to your kiwi: ");
         try
         {
             int food = scan.nextInt();
             boolean found = false;
-            for(Item item : ClubKiwi.items)
+          /*  for(Item item : ClubKiwi.items)
             {
                 if(item.getType() == Item.ItemType.Food && item.getIndex() == food)
                 {
@@ -175,7 +176,7 @@ class CUI implements Runnable
                     Helper.println("You gave your kiwi " + item.getsName());
                     found = true;
                 }
-            }
+            }*/
 
             if(!found)
             {
