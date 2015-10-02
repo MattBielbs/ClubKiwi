@@ -1,6 +1,5 @@
 package com.clubkiwi;
 
-import com.clubkiwi.Character.Item;
 import com.clubkiwiserver.Packet.PacketType;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -88,7 +87,7 @@ class CUI implements Runnable
         String username = scan.next();
         Helper.println("Enter your desired password");
         String password = scan.next();
-        ClubKiwi.conn.SendData(PacketType.CreateUser_C, username, password);
+        ClubKiwi.connMgr.SendData(PacketType.CreateUser_C, username, password);
     }
 
 
@@ -98,7 +97,7 @@ class CUI implements Runnable
         String username = scan.next();
         Helper.println("Enter your password");
         String password = scan.next();
-        ClubKiwi.conn.SendData(PacketType.Login_C, username, password);
+        ClubKiwi.connMgr.SendData(PacketType.Login_C, username, password);
     }
 
     public void MainCharacterScreen()

@@ -1,6 +1,9 @@
-package com.clubkiwi;
+package com.clubkiwi.Managers;
 
 import com.clubkiwi.Character.Item;
+import com.clubkiwi.ClubKiwi;
+import com.clubkiwi.Helper;
+import com.sun.istack.internal.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +15,7 @@ import java.util.Map;
 /**
  * Created by Mathew on 9/29/2015.
  */
-public class Inventory extends JPanel
+public class InventoryManager extends JPanel
 {
     //stuffed this here cause its more of a struct than a class.
     class InvItem
@@ -52,23 +55,15 @@ public class Inventory extends JPanel
     private List<InvItem> items = new ArrayList<>();
     private int selecteditem = 1;
 
-    private BufferedImage foodimage;
+    private Image foodimage;
 
-    public Inventory(ClubKiwi ck)
+    public InventoryManager(ClubKiwi ck)
     {
         setLayout(null);
         setVisible(false);
         setSize(300, 300);
         this.ck = ck;
-
-        try
-        {
-            this.foodimage = ck.resMgr.getImage("apple");
-        }
-        catch(Exception ex)
-        {
-
-        }
+        this.foodimage = ck.resMgr.getImage("apple");
     }
 
     public void addItemToInventory(Item item)
@@ -157,7 +152,7 @@ public class Inventory extends JPanel
 
             //Small item image 15x15
             if(i.getItem().getType() == Item.ItemType.Food)
-                g.drawImage(Helper.makeColorTransparent(foodimage, Color.WHITE), 25, drawy - 13, null);
+                g.drawImage(foodimage, 25, drawy - 13, null);
 
             //Is the current item the selected one?
             if(selecteditem == count)
@@ -180,6 +175,7 @@ public class Inventory extends JPanel
         }
     }
 
+    @Nullable
     public Item getSelectedItem()
     {
         try

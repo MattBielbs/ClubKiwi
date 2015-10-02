@@ -2,7 +2,7 @@ package com.clubkiwi.Character;
 
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.Helper;
-import com.clubkiwi.Room;
+import com.clubkiwi.World.Room;
 import com.clubkiwiserver.Packet.PacketType;
 
 import javax.swing.*;
@@ -41,7 +41,7 @@ public class Kiwi extends JPanel implements Runnable
 
     //GUI things
     private int x, y, w, h;
-    private BufferedImage kiwiimage;
+    private Image kiwiimage;
     private ArrayList<MoveState> MoveStates = new ArrayList<>();
     private double rotate = 0;
     private boolean rotateup = true;
@@ -66,11 +66,10 @@ public class Kiwi extends JPanel implements Runnable
         this.w = 100;
         this.h = 145;
 
-        kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
-
         try
         {
             //can fail on the server so it dosnt matter (fix later)
+            kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
             swaproom(ClubKiwi.gui.main);
         }
         catch(Exception ex)
@@ -189,6 +188,16 @@ public class Kiwi extends JPanel implements Runnable
     public int getCurrentroom()
     {
         return currentroom;
+    }
+
+    public int getW()
+    {
+        return w;
+    }
+
+    public int getH()
+    {
+        return h;
     }
 
     //endregion
@@ -328,7 +337,7 @@ public class Kiwi extends JPanel implements Runnable
 
     public void updateServer()
     {
-        ClubKiwi.conn.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getStrength(), getSpeed(), getFlight(), getSwag(), getHunger(), getMood(), getEnergy());
+        ClubKiwi.connMgr.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getStrength(), getSpeed(), getFlight(), getSwag(), getHunger(), getMood(), getEnergy());
     }
 
     public void setSleeping(boolean sleeping)
@@ -368,7 +377,7 @@ public class Kiwi extends JPanel implements Runnable
     {
         rotate();
         //send update for server
-        ClubKiwi.conn.SendData(PacketType.KiwiPos_C, x, y, currentroom);
+        ClubKiwi.connMgr.SendData(PacketType.KiwiPos_C, x, y, currentroom);
     }
 
     private void rotate()
@@ -426,9 +435,8 @@ public class Kiwi extends JPanel implements Runnable
         AffineTransform transform = new AffineTransform();
         transform.translate(getWidth() / 2, getHeight() / 2);
         transform.rotate(rotate);
-        transform.translate(-kiwiimage.getWidth() / 2, -kiwiimage.getHeight() / 2);
-        g2d.drawImage(Helper.makeColorTransparent(kiwiimage, Color.WHITE), transform, null);
-
+        transform.translate(-kiwiimage.getWidth(null) / 2, -kiwiimage.getHeight(null) / 2);
+        g2d.drawImage(kiwiimage, transform, null);
         //Shadow
         Font f = new Font("Arial", Font.BOLD, 15);
         g.setFont(f);
@@ -485,23 +493,24 @@ public class Kiwi extends JPanel implements Runnable
                 if (hasMoveState(MoveState.Right) && x < ClubKiwi.gui.getCurrentRoom().getSizeX() - w)
                     this.x += (speed / 20);
 
-                if(MoveStates.size() > 0)
+                if (MoveStates.size() > 0)
                     sendpos();
+
 
                 //Move camera
                 int camx = this.x - 400 + (w / 2);
                 int camy = this.y - 250 + (h / 2);
 
-                if(camx < 0)
+                if (camx < 0)
                     camx = 0;
 
-                if(camy < 0)
+                if (camy < 0)
                     camy = 0;
 
-                if(camx > ClubKiwi.gui.getCurrentRoom().getSizeX() - 800)
+                if (camx > ClubKiwi.gui.getCurrentRoom().getSizeX() - 800)
                     camx = ClubKiwi.gui.getCurrentRoom().getSizeX() - 800;
 
-                if(camy > ClubKiwi.gui.getCurrentRoom().getSizeY() - 500)
+                if (camy > ClubKiwi.gui.getCurrentRoom().getSizeY() - 500)
                     camy = ClubKiwi.gui.getCurrentRoom().getSizeY() - 500;
 
                 ClubKiwi.gui.setCamX(camx);
@@ -511,7 +520,7 @@ public class Kiwi extends JPanel implements Runnable
                 ClubKiwi.gui.getCurrentRoom().repaint();
 
 
-               // repaint();
+                // repaint();
             }
             catch (Exception ex)
             {

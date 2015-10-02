@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 public class PoofEffect extends JPanel implements Runnable
 {
     private int x, y;
-    private BufferedImage poof;
+    private Image poof;
 
     public PoofEffect(int x, int y)
     {
@@ -50,6 +50,6 @@ public class PoofEffect extends JPanel implements Runnable
     {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(Helper.makeColorTransparent(poof, Color.WHITE), 0,0, null);
+        g2d.drawImage(poof, 0,0, null);
     }
 }

@@ -1,5 +1,7 @@
-package com.clubkiwi;
+package com.clubkiwi.Managers;
 
+import com.clubkiwi.ClubKiwi;
+import com.clubkiwi.Helper;
 import com.clubkiwiserver.Packet.Packet;
 import com.clubkiwiserver.Packet.PacketType;
 import com.clubkiwiserver.Packet.Serializer;
@@ -10,7 +12,7 @@ import java.net.*;
 /**
  * Handles connection with the server component
  */
-public class Connection implements Runnable
+public class ConnectionManager implements Runnable
 {
     private ClubKiwi ck;
     private DatagramSocket clientSocket;
@@ -18,15 +20,18 @@ public class Connection implements Runnable
     private byte[] receiveData = new byte[1024];
     private Serializer s = new Serializer();
 
-    public Connection(ClubKiwi ck)
+    public ConnectionManager(ClubKiwi ck)
     {
         try
         {
             this.ck = ck;
             clientSocket = new DatagramSocket();
             //clientSocket.setSoTimeout(1000);
-            IPAddress = InetAddress.getByName("localhost");
-            //clientSocket.connect(IPAddress, 5678);
+            IPAddress = InetAddress.getByName("winserver-pc");
+          //  IPAddress = InetAddress.getByName("matypatty.zapto.org");
+            clientSocket.connect(IPAddress, 5678);
+
+
         }
         catch(Exception ex)
         {

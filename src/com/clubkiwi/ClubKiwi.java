@@ -1,6 +1,8 @@
 package com.clubkiwi;
 import com.clubkiwi.Character.*;
+import com.clubkiwi.Managers.*;
 import com.clubkiwiserver.Packet.*;
+import com.sun.istack.internal.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,15 +18,15 @@ public class ClubKiwi
 
     //Accessible instances
     public static GUI gui;
-    public static Connection conn;
-    public static Inventory inv;
+    public static ConnectionManager connMgr;
+    public static InventoryManager invMgr;
     public static InputManager inputMgr;
     public static ResourceManager resMgr;
     public static SoundManager soundMgr;
 
     //Some arrays.
-    public ArrayList<Kiwi> players;
-    public ArrayList<Item> items;
+    public static ArrayList<Kiwi> players;
+    public static ArrayList<Item> items;
 
     public ClubKiwi()
     {
@@ -41,12 +43,15 @@ public class ClubKiwi
 
     private void Init()
     {
+        //Start the clock
+        long start = System.currentTimeMillis();
+
         //Create instances
-        conn = new Connection(this);
-        resMgr = new ResourceManager(this);
+        connMgr = new ConnectionManager(this);
+        resMgr = new ResourceManager();
         soundMgr = new SoundManager(this);
         inputMgr = new InputManager(this);
-        inv = new Inventory(this);
+        invMgr = new InventoryManager(this);
         //GUI last.
         gui = new GUI(this);
 
@@ -58,8 +63,10 @@ public class ClubKiwi
 
 
         //Start the connection.
-        connThread = new Thread(conn);
+        connThread = new Thread(connMgr);
         connThread.start();
+
+        Helper.println("ClubKiwi initialized in " + (System.currentTimeMillis() - start) + "ms");
     }
 
     private void initItems()
@@ -117,6 +124,15 @@ public class ClubKiwi
                 break;
             case Chat_S:
                 addChatMessage((int)p.getData(0), (String)p.getData(1));
+                break;
+            case WorldItemAdd:
+                gui.getCurrentRoom().addWorldItem(p);
+                break;
+            case WorldItemRemove:
+                gui.getCurrentRoom().removeWorldItem(p);
+                break;
+            case WorldItemUpdate:
+                gui.getCurrentRoom().updateWorldItem(p);
                 break;
 
         }
@@ -189,7 +205,7 @@ public class ClubKiwi
         Thread temp = new Thread(localKiwi);
         temp.start();
 
-        Helper.println("Starting ClubKiwi please wait...");
+        Helper.println("Loading world...");
         gui.StartGameView();
     }
 
@@ -197,9 +213,8 @@ public class ClubKiwi
     private void Shutdown()
     {
         Helper.println("Shutting down...");
-        conn.SendData(PacketType.Disconnect_C, 0);
+        connMgr.SendData(PacketType.Disconnect_C, 0);
         ClubKiwi.running = false;
-       // conn.getClientSocket().close();
         connThread.interrupt();
     }
 
@@ -211,9 +226,10 @@ public class ClubKiwi
     //Updating the server when client changes.
     public void updateServer()
     {
-        conn.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getStrength(), localKiwi.getSpeed(), localKiwi.getFlight(), localKiwi.getSwag(), localKiwi.getHunger(), localKiwi.getMood(), localKiwi.getEnergy());
+        connMgr.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getStrength(), localKiwi.getSpeed(), localKiwi.getFlight(), localKiwi.getSwag(), localKiwi.getHunger(), localKiwi.getMood(), localKiwi.getEnergy());
     }
 
+    @Nullable
     private Kiwi getPlayerByID(int id)
     {
         for(Kiwi k : players)

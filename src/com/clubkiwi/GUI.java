@@ -1,5 +1,9 @@
 package com.clubkiwi;
 
+import com.clubkiwi.Character.Item;
+import com.clubkiwi.World.Dispenser;
+import com.clubkiwi.World.Room;
+import com.clubkiwi.World.WorldItem;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.swing.*;
 import java.awt.*;
@@ -53,7 +57,7 @@ public class GUI extends JFrame implements ActionListener
         switch(e.getActionCommand())
         {
             case "Login":
-                    ClubKiwi.conn.SendData(PacketType.Login_C, username.getText(), String.valueOf(password.getPassword()));
+                    ClubKiwi.connMgr.SendData(PacketType.Login_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Register":
                 if(username.getText().isEmpty() || String.valueOf(password.getPassword()).isEmpty())
@@ -61,10 +65,10 @@ public class GUI extends JFrame implements ActionListener
                 else if (username.getText().length() >= 12)
                     JOptionPane.showMessageDialog(null, "Your username must be no more than 12 characters", "Error", JOptionPane.WARNING_MESSAGE);
                 else
-                    ClubKiwi.conn.SendData(PacketType.CreateUser_C, username.getText(), String.valueOf(password.getPassword()));
+                    ClubKiwi.connMgr.SendData(PacketType.CreateUser_C, username.getText(), String.valueOf(password.getPassword()));
                 break;
             case "Send":
-                ClubKiwi.conn.SendData(PacketType.Chat_C, chatbox.getText());
+                ClubKiwi.connMgr.SendData(PacketType.Chat_C, chatbox.getText());
                 chatbox.setText("");
                 requestFocus();
                 break;
@@ -134,7 +138,12 @@ public class GUI extends JFrame implements ActionListener
     public void SwitchToRoom(Room room)
     {
         if(currentRoom != null)
+        {
             remove(currentRoom);
+
+            //Remove all worlditems from old room
+            currentRoom.getWorldItems().clear();
+        }
 
         add(room, BorderLayout.CENTER);
         currentRoom = room;
@@ -146,16 +155,23 @@ public class GUI extends JFrame implements ActionListener
         if(ck.getLocalKiwi() != null)
             ck.getLocalKiwi().swaproom(currentRoom);
 
+        //Move all world objects to back
+        for(WorldItem item : room.getWorldItems())
+                room.moveToBack(item);
+
         //add the inventory
         boolean hasinv = false;
         for(Component c : room.getComponents())
         {
-            if(c == ck.inv)
+            if(c == ck.invMgr)
                 hasinv = true;
         }
 
+        //add or move to front
         if(!hasinv)
-            room.add(ck.inv, 0);
+            room.add(ck.invMgr, 0);
+        else
+            room.moveToFront(ck.invMgr);
 
         //Force refresh
         setSize(799, 599);
@@ -195,14 +211,10 @@ public class GUI extends JFrame implements ActionListener
 
     public void ShowMain()
     {
+
         SwitchToRoom(main);
 
-        //Add local player
         main.add(ck.getLocalKiwi(), 1);
-
-
-
-
     }
 
     public void addChatMessage(String message)

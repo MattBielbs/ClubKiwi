@@ -1,6 +1,7 @@
-package com.clubkiwi;
+package com.clubkiwi.Managers;
 
 import com.clubkiwi.Character.Kiwi;
+import com.clubkiwi.ClubKiwi;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,7 +52,7 @@ public class InputManager implements KeyEventDispatcher
                 if (keycode == KeyEvent.VK_E)
                 {
                     //Toggle inv
-                    ck.inv.setVisible(!ck.inv.isVisible());
+                    ck.invMgr.setVisible(!ck.invMgr.isVisible());
 
                     //Remove all movement flags
                     ck.getLocalKiwi().clearMoveStates();
@@ -63,9 +64,9 @@ public class InputManager implements KeyEventDispatcher
                     for (Kiwi k : ck.players)
                         System.out.println(k);
 
-                    ck.inv.addItemToInventory(ck.items.get(1));
-                    ck.inv.addItemToInventory(ck.items.get(1));
-                    ck.inv.addItemToInventory(ck.items.get(3));
+                    ck.invMgr.addItemToInventory(ck.items.get(1));
+                    ck.invMgr.addItemToInventory(ck.items.get(1));
+                    ck.invMgr.addItemToInventory(ck.items.get(3));
                 }
 
                 if(keycode == KeyEvent.VK_HOME)
@@ -79,14 +80,14 @@ public class InputManager implements KeyEventDispatcher
                 }
 
                 //Keyboard either controls the inventory or the kiwi
-                if(ck.inv.isVisible())
+                if(ck.invMgr.isVisible())
                 {
                     if (keycode == KeyEvent.VK_W)
-                        ck.inv.prevItem();
+                        ck.invMgr.prevItem();
                     else if (keycode == KeyEvent.VK_S)
-                        ck.inv.nextItem();
+                        ck.invMgr.nextItem();
                     else if (keycode == KeyEvent.VK_ENTER)
-                        ck.inv.useItem();
+                        ck.invMgr.useItem();
                 }
                 else
                 {
