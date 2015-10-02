@@ -15,7 +15,7 @@ public class Room extends JLayeredPane
     private int sizeX, sizeY, startX, staryY;
     private BufferedImage bg;
 
-    public Room(int ID, String name, int sizeX, int sizeY, int startX, int startY, String bg)
+    public Room(int ID, String name, int sizeX, int sizeY, int startX, int startY, BufferedImage bg)
     {
         this.ID = ID;
         this.name = name;
@@ -23,18 +23,10 @@ public class Room extends JLayeredPane
         this.sizeY = sizeY;
         this.startX = startX;
         this.staryY = startY;
+        this.bg = bg;
         setLayout(null);
         setSize(new Dimension(800, 500));
         setLocation(0, 0);
-
-        try
-        {
-            this.bg = ImageIO.read(ClubKiwi.cldr.getResource(bg));
-        }
-        catch(Exception ex)
-        {
-            //System.out.println("Could not load kiwi image");
-        }
     }
 
     public int getStartX()

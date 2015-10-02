@@ -4,7 +4,6 @@ import com.clubkiwiserver.Packet.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Main game class
@@ -12,21 +11,23 @@ import java.util.List;
 public class ClubKiwi
 {
     private static Kiwi localKiwi;
+    public static boolean running;
     private Thread connThread;
 
+    //Accessible instances
     public static GUI gui;
     public static Connection conn;
     public static Inventory inv;
-    public static InputManager inputManager;
-    public static boolean running;
-    public static ClassLoader cldr;
+    public static InputManager inputMgr;
+    public static ResourceManager resMgr;
+    public static SoundManager soundMgr;
 
+    //Some arrays.
     public ArrayList<Kiwi> players;
     public ArrayList<Item> items;
 
     public ClubKiwi()
     {
-        cldr = this.getClass().getClassLoader();
         running = true;
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -42,7 +43,9 @@ public class ClubKiwi
     {
         //Create instances
         conn = new Connection(this);
-        inputManager = new InputManager(this);
+        resMgr = new ResourceManager(this);
+        soundMgr = new SoundManager(this);
+        inputMgr = new InputManager(this);
         inv = new Inventory(this);
         //GUI last.
         gui = new GUI(this);

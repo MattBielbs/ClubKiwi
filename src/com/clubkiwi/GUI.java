@@ -1,13 +1,10 @@
 package com.clubkiwi;
 
-import com.clubkiwi.Character.Kiwi;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 
@@ -76,9 +73,9 @@ public class GUI extends JFrame implements ActionListener
 
     private void loadRooms()
     {
-        main = new Room(0, "Main", 2000, 2000, 0, 0, "bg.png");
-        login = new Room(1, "Login", 800, 600, 0,0,"login.png");
-        room2 = new Room(2, "Room2", 1024, 768, 0, 0, "bg2.png");
+        main = new Room(0, "Main", 2000, 2000, 0, 0, ck.resMgr.getImage("bg"));
+        login = new Room(1, "Login", 800, 600, 0,0,ck.resMgr.getImage("login"));
+        room2 = new Room(2, "Room2", 1024, 768, 0, 0, ck.resMgr.getImage("bg2"));
 
         rooms.add(main);
         rooms.add(login);

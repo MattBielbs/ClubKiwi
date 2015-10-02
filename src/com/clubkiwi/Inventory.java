@@ -2,7 +2,6 @@ package com.clubkiwi;
 
 import com.clubkiwi.Character.Item;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -64,7 +63,7 @@ public class Inventory extends JPanel
 
         try
         {
-            this.foodimage = ImageIO.read(ClubKiwi.cldr.getResource("apple.png"));
+            this.foodimage = ck.resMgr.getImage("apple");
         }
         catch(Exception ex)
         {

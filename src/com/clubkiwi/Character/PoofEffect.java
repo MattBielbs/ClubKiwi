@@ -3,7 +3,6 @@ package com.clubkiwi.Character;
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.Helper;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -20,15 +19,7 @@ public class PoofEffect extends JPanel implements Runnable
     {
         this.x = x;
         this.y = y;
-
-        try
-        {
-            this.poof = ImageIO.read(ClubKiwi.cldr.getResource("poof.png"));
-        }
-        catch(Exception ex)
-        {
-
-        }
+        this.poof = ClubKiwi.resMgr.getImage("poof");
 
         setLocation(x, y);
         setSize(109, 129);

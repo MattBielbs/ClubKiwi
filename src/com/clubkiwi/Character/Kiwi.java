@@ -4,7 +4,7 @@ import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.Helper;
 import com.clubkiwi.Room;
 import com.clubkiwiserver.Packet.PacketType;
-import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -66,15 +66,15 @@ public class Kiwi extends JPanel implements Runnable
         this.w = 100;
         this.h = 145;
 
+        kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
+
         try
         {
-            //These fail on the server so it dosnt matter
-            kiwiimage = ImageIO.read(ClubKiwi.cldr.getResource("kiwi.png"));
+            //can fail on the server so it dosnt matter (fix later)
             swaproom(ClubKiwi.gui.main);
         }
         catch(Exception ex)
         {
-            //System.out.println("Could not load kiwi image");
         }
 
         setSize(w,h);
