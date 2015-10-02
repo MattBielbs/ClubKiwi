@@ -1,8 +1,8 @@
--poof effect on disconnect
+-sync dispensers on connect.
+-fix and implement dispensers
 -add new movestate (digging)
 -server controls adding of exp
 -convar exprates
 -actually make the game (lisa make background and worms)
--players in rooms.
--collision hotspot/room switch
--inv system and more items
+-collision hotspot
+-shop and more items
