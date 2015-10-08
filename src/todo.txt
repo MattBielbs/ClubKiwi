@@ -1,9 +1,7 @@
--fix dispenser size (its colliding from ages away)
--tell server that dispenser has been activated
--add zones
+-add zones (need to modify addworlditem because its curently only for dispesers
 -add new movestate (digging)
 -server controls adding of exp
 -convar exprates
--actually make the game (make dispensers work and drop random)
--collision hotspot
+-actually make the game (add zones)
 -shop and more items
+-server debug info for senddata not displaying strings. (array2string needed)

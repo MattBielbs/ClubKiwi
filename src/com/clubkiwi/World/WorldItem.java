@@ -10,15 +10,15 @@ import java.awt.*;
  */
 public abstract class WorldItem extends JPanel
 {
-    protected int ID, x, y, w, h;
+    protected int ID, xpos, ypos, w, h;
     protected boolean bCollide, bVisible;
     protected Image image;
 
-    public WorldItem(int ID, int x, int y, int w, int h, boolean bCollide, boolean bVisible, Image image)
+    public WorldItem(int ID, int xpos, int ypos, int w, int h, boolean bCollide, boolean bVisible, Image image)
     {
         this.ID = ID;
-        this.x = x;
-        this.y = y;
+        this.xpos = xpos;
+        this.ypos = ypos;
         this.w = w;
         this.h = h;
         this.bCollide = bCollide;
@@ -28,7 +28,7 @@ public abstract class WorldItem extends JPanel
         setLayout(null);
         setOpaque(false);
         setVisible(true);
-        setLocation(x, y);
+        setLocation(xpos, ypos);
         setSize(w, h);
     }
 
@@ -37,16 +37,14 @@ public abstract class WorldItem extends JPanel
         return ID;
     }
 
-    @Override
-    public int getX()
+    public int getXpos()
     {
-        return x;
+        return xpos;
     }
 
-    @Override
-    public int getY()
+    public int getYpos()
     {
-        return y;
+        return ypos;
     }
 
     public boolean isbVisible()
@@ -61,13 +59,21 @@ public abstract class WorldItem extends JPanel
         Graphics2D g2d = (Graphics2D) g;
 
         if(isVisible())
-            g2d.drawImage(image, x, y, null);
+            g2d.drawImage(image, 0, 0, null);
     }
 
     //Check for collision
     public boolean isColliding(Kiwi k)
     {
-        return ((k.getX() + k.getW() > x && k.getX() < x + w) && (k.getY() + k.getH() > y && k.getY() < y + h));
+        return ((k.getX() + k.getW() > xpos && k.getX() < xpos + w) && (k.getY() + k.getH() > ypos && k.getY() < ypos + h));
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof WorldItem)
+            return ((WorldItem)obj).getID() == this.getID();
+
+        return false;
+    }
 }

@@ -95,7 +95,7 @@ public class Kiwi extends JPanel implements Runnable
     {
         //Swap the kiwi to the new room
         ClubKiwi.gui.rooms.get(currentroom).remove(this);
-        room.add(this);
+        room.add(this, 1);
         currentroom = room.getID();
 
         //Move player to start pos

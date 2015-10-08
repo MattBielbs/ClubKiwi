@@ -115,7 +115,7 @@ public class InputManager implements KeyEventDispatcher
                         ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
                     }
 
-                    if(keycode == KeyEvent.VK_E)
+                    if(keycode == KeyEvent.VK_SPACE)
                     {
                         if(ck.gui.getCurrentRoom().getCollidingItem() != null)
                         {

@@ -1,5 +1,6 @@
 package com.clubkiwi.World;
 
+import com.clubkiwi.Character.PoofEffect;
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwiserver.Packet.Packet;
 import com.sun.istack.internal.Nullable;
@@ -74,8 +75,11 @@ public class Room extends JLayeredPane
     {
         WorldItem item = new Dispenser((int)p.getData(0), (int)p.getData(1),(int)p.getData(2),(boolean)p.getData(3));
 
-        worldItems.add(item);
-        add(item);
+        if(!worldItems.contains(item))
+        {
+            worldItems.add(item);
+            add(item, 100);
+        }
     }
 
     public void removeWorldItem(Packet p)
@@ -85,6 +89,7 @@ public class Room extends JLayeredPane
         {
             worldItems.remove(item);
             remove(item);
+            add(new PoofEffect(item.getXpos(), item.getYpos()));
         }
     }
 
