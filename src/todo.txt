@@ -1,8 +1,9 @@
--sync dispensers on connect.
--fix and implement dispensers
+-fix dispenser size (its colliding from ages away)
+-tell server that dispenser has been activated
+-add zones
 -add new movestate (digging)
 -server controls adding of exp
 -convar exprates
--actually make the game (lisa make background and worms)
+-actually make the game (make dispensers work and drop random)
 -collision hotspot
 -shop and more items

@@ -27,7 +27,7 @@ public class ConnectionManager implements Runnable
             this.ck = ck;
             clientSocket = new DatagramSocket();
             //clientSocket.setSoTimeout(1000);
-            IPAddress = InetAddress.getByName("winserver-pc");
+            IPAddress = InetAddress.getByName("localhost");
           //  IPAddress = InetAddress.getByName("matypatty.zapto.org");
             clientSocket.connect(IPAddress, 5678);
 

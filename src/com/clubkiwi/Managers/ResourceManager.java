@@ -73,9 +73,9 @@ public class ResourceManager
         missingAudio =  AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/ding.wav")));
 
         //Load the rest
-        loadedSounds.put("Song1", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/AdhesivewombatHourglass.wav"))));
-        loadedSounds.put("Song2", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/DualtraxCorostheme.wav"))));
-        loadedSounds.put("Song3", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/ScribbleSwann.wav"))));
+        loadedSounds.put("Song1", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/DualtraxCorostheme.wav"))));
+        loadedSounds.put("Song2", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/ScribbleSwann.wav"))));
+        loadedSounds.put("Song3", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/AdhesivewombatHourglass.wav"))));
         loadedSounds.put("Song4", AudioSystem.getAudioInputStream(new BufferedInputStream(cldr.getResourceAsStream("Audio/SkrjuWavesToLullaby.wav"))));
     }
 

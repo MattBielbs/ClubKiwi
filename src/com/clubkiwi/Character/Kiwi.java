@@ -66,17 +66,11 @@ public class Kiwi extends JPanel implements Runnable
         this.w = 100;
         this.h = 145;
 
-        try
-        {
-            //can fail on the server so it dosnt matter (fix later)
-            kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
-            swaproom(ClubKiwi.gui.main);
-        }
-        catch(Exception ex)
-        {
-        }
+        kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
+        swaproom(ClubKiwi.gui.main);
 
-        setSize(w,h);
+
+        setSize(w, h);
         setLayout(null);
         setOpaque(false);
         setVisible(true);
@@ -200,6 +194,17 @@ public class Kiwi extends JPanel implements Runnable
         return h;
     }
 
+    @Override
+    public int getX()
+    {
+        return x;
+    }
+
+    @Override
+    public int getY()
+    {
+        return y;
+    }
     //endregion
 
     //region Setters
@@ -292,21 +297,9 @@ public class Kiwi extends JPanel implements Runnable
         this.energy = energy;
     }
 
-    @Override
-    public int getX()
-    {
-        return x;
-    }
-
     public void setX(int x)
     {
         this.x = x;
-    }
-
-    @Override
-    public int getY()
-    {
-        return y;
     }
 
     public void setY(int y)
@@ -319,6 +312,20 @@ public class Kiwi extends JPanel implements Runnable
         this.currentroom = currentroom;
     }
 
+    public void setSleeping(boolean sleeping)
+    {
+        this.sleeping = sleeping;
+    }
+
+    public void setID(int ID)
+    {
+        this.ID = ID;
+    }
+
+    public void setMovestate(MoveState movestate)
+    {
+        this.MoveStates.add(movestate);
+    }
     //endregion
 
     public void giveItem(Item item)
@@ -340,21 +347,6 @@ public class Kiwi extends JPanel implements Runnable
         ClubKiwi.connMgr.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getStrength(), getSpeed(), getFlight(), getSwag(), getHunger(), getMood(), getEnergy());
     }
 
-    public void setSleeping(boolean sleeping)
-    {
-        this.sleeping = sleeping;
-    }
-
-    public void setID(int ID)
-    {
-        this.ID = ID;
-    }
-
-    public void setMovestate(MoveState movestate)
-    {
-        this.MoveStates.add(movestate);
-    }
-
     public void removeMovestate(MoveState movestate)
     {
         this.MoveStates.remove(movestate);
@@ -369,9 +361,6 @@ public class Kiwi extends JPanel implements Runnable
     {
         return this.MoveStates.contains(movestate);
     }
-
-
-
 
     private void sendpos()
     {
@@ -407,8 +396,6 @@ public class Kiwi extends JPanel implements Runnable
 
 
     //String things
-
-
     @Override
     public String toString()
     {

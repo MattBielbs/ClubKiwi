@@ -7,6 +7,7 @@ import com.clubkiwi.Helper;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Mathew on 10/2/2015.
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class Dispenser extends WorldItem
 {
     private ArrayList<Item> items;
+    private Random random = new Random();
 
     public Dispenser(int id, int x, int y, boolean bVisible)
     {
@@ -21,5 +23,10 @@ public class Dispenser extends WorldItem
         this.items = ClubKiwi.items;
     }
 
+    public void activate()
+    {
+        ClubKiwi.invMgr.addItemToInventory(items.get(random.nextInt(items.size())));
+        //tell server dispenser has been activated
+    }
 
 }

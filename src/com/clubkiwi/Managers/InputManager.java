@@ -2,6 +2,8 @@ package com.clubkiwi.Managers;
 
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwi.ClubKiwi;
+import com.clubkiwi.World.Dispenser;
+import com.clubkiwi.World.Zone;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -111,6 +113,20 @@ public class InputManager implements KeyEventDispatcher
                     } else if (keycode == KeyEvent.VK_S && !ck.getLocalKiwi().hasMoveState(Kiwi.MoveState.Down))
                     {
                         ck.getLocalKiwi().setMovestate(Kiwi.MoveState.Down);
+                    }
+
+                    if(keycode == KeyEvent.VK_E)
+                    {
+                        if(ck.gui.getCurrentRoom().getCollidingItem() != null)
+                        {
+                            //Dispenser
+                            if(ck.gui.getCurrentRoom().getCollidingItem() instanceof Dispenser)
+                                ((Dispenser)(ck.gui.getCurrentRoom().getCollidingItem())).activate();
+
+                            //Zone
+                            if(ck.gui.getCurrentRoom().getCollidingItem() instanceof Zone)
+                                ((Zone)(ck.gui.getCurrentRoom().getCollidingItem())).activate();
+                        }
                     }
                 }
             }
