@@ -100,6 +100,7 @@ public class Room extends JLayeredPane
         if(temp != null)
         {
             temp = item;
+            revalidate();
         }
     }
 

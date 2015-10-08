@@ -4,4 +4,9 @@
 -convar exprates
 -actually make the game (add zones)
 -shop and more items
--server debug info for senddata not displaying strings. (array2string needed)
+-make kiwi actually die lol
+
+bugs:
+inv sometimes dosnt show
+lose selecteditem on inv
+money goes to 1000000 first bag use

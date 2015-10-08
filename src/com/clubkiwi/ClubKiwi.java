@@ -75,23 +75,31 @@ public class ClubKiwi
         HashMap<String, Double> map1 = new HashMap<>();
         map1.put("Hunger", 20.0);
         map1.put("Energy", 5.0);
-        items.add(new Item(items.size(), "Worms", "Worms add 20 hunger and 5 energy", 0.0, Item.ItemType.Food, map1));
+        items.add(new Item(items.size(), "Worms", "Worms add 20 hunger and 5 energy", 15.0, Item.ItemType.Food, map1));
 
         HashMap<String, Double> map2 = new HashMap<>();
         map2.put("Hunger", 5.0);
         map2.put("Energy", 5.0);
         map2.put("Mood", -5.0);
-        items.add(new Item(items.size(), "Fruit", "Keep it fruity you groovy smoothie.", 0.0, Item.ItemType.Food, map2));
+        items.add(new Item(items.size(), "Fruit", "Keep it fruity you groovy smoothie.", 420.0, Item.ItemType.Food, map2));
 
         HashMap<String, Double> map3 = new HashMap<>();
         map3.put("Hunger", -5.0);
         map3.put("Mood", 10.0);
-        items.add(new Item(items.size(), "Grubz", "Doesn't taste very good but makes you happy.", 0.0, Item.ItemType.Food, map3));
+        items.add(new Item(items.size(), "Grubz", "Doesn't taste very good but makes you happy.", 10.0, Item.ItemType.Food, map3));
 
         HashMap<String, Double> map4 = new HashMap<>();
         map4.put("Health", 10.0);
         map4.put("Hunger", 10.0);
-        items.add(new Item(items.size(), "BandAid", "Fixes you up", 0.0, Item.ItemType.Food, map4));
+        items.add(new Item(items.size(), "BandAid", "Fixes you up", 20.0, Item.ItemType.Food, map4));
+
+        HashMap<String, Double> map5 = new HashMap<>();
+        map5.put("Money", 10.0);
+        items.add(new Item(items.size(), "Money Bag (s)", "A small money bag", 10.0, Item.ItemType.Food, map5));
+
+        HashMap<String, Double> map6 = new HashMap<>();
+        map6.put("Money", 50.0);
+        items.add(new Item(items.size(), "Money Bag (l)", "A large money bag", 50.0, Item.ItemType.Food, map6));
     }
 
     public void OnPacketReceive(Packet p)

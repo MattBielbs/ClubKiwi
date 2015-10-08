@@ -337,7 +337,7 @@ public class Kiwi extends JPanel implements Runnable
         this.setEnergy(this.getEnergy() + item.getEffect().getOrDefault("Energy", 0.0));
         this.setSpeed(this.getSpeed() + item.getEffect().getOrDefault("Speed", 0.0));
         this.setStrength(this.getStrength() + item.getEffect().getOrDefault("Strength", 0.0));
-
+        this.setMoney(this.getMoney() + item.getEffect().getOrDefault("Money", 0.0));
         //Tell the server
         updateServer();
     }

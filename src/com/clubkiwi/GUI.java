@@ -142,7 +142,7 @@ public class GUI extends JFrame implements ActionListener
             remove(currentRoom);
 
             //Remove all worlditems from old room
-            currentRoom.getWorldItems().clear();
+          //  currentRoom.getWorldItems().clear();
         }
 
         add(room, BorderLayout.CENTER);
@@ -156,8 +156,8 @@ public class GUI extends JFrame implements ActionListener
             ck.getLocalKiwi().swaproom(currentRoom);
 
         //Move all world objects to back
-        for(WorldItem item : room.getWorldItems())
-                room.moveToBack(item);
+     //   for(WorldItem item : room.getWorldItems())
+     //           room.moveToBack(item);
 
         //add the inventory
         boolean hasinv = false;
