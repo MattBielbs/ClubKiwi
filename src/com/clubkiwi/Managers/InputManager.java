@@ -3,7 +3,6 @@ package com.clubkiwi.Managers;
 import com.clubkiwi.Character.Kiwi;
 import com.clubkiwi.ClubKiwi;
 import com.clubkiwi.World.Dispenser;
-import com.clubkiwi.World.Zone;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -71,15 +70,6 @@ public class InputManager implements KeyEventDispatcher
                     ck.invMgr.addItemToInventory(ck.items.get(3));
                 }
 
-                if(keycode == KeyEvent.VK_HOME)
-                {
-                    ck.gui.SwitchToRoom(ck.gui.room2);
-                }
-
-                if(keycode == KeyEvent.VK_END)
-                {
-                    ck.gui.SwitchToRoom(ck.gui.main);
-                }
 
                 //Keyboard either controls the inventory or the kiwi
                 if(ck.invMgr.isVisible())
@@ -122,10 +112,6 @@ public class InputManager implements KeyEventDispatcher
                             //Dispenser
                             if(ck.gui.getCurrentRoom().getCollidingItem() instanceof Dispenser)
                                 ((Dispenser)(ck.gui.getCurrentRoom().getCollidingItem())).activate();
-
-                            //Zone
-                            if(ck.gui.getCurrentRoom().getCollidingItem() instanceof Zone)
-                                ((Zone)(ck.gui.getCurrentRoom().getCollidingItem())).activate();
                         }
                     }
                 }

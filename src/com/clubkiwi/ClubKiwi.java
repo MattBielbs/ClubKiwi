@@ -4,6 +4,7 @@ import com.clubkiwi.Managers.*;
 import com.clubkiwiserver.Packet.*;
 import com.sun.istack.internal.Nullable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -142,6 +143,17 @@ public class ClubKiwi
             case WorldItemUpdate:
                 gui.getCurrentRoom().updateWorldItem(p);
                 break;
+            case CharacterDead:
+                if(getLocalKiwi() == null)
+                {
+                    JOptionPane.showMessageDialog(null, "Your kiwi has died while you were away. Please register a new kiwi to play again", "You Lose", JOptionPane.WARNING_MESSAGE);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Oh dear! Your kiwi has died.", "You Lose", JOptionPane.WARNING_MESSAGE);
+                    System.exit(0);
+                }
+                break;
 
         }
     }
@@ -199,8 +211,7 @@ public class ClubKiwi
 
     private void AccountError(int id, String message)
     {
-        Helper.println(message);
-        //cui.DisplayWelcome();
+        JOptionPane.showMessageDialog(null, message, "Account error", JOptionPane.WARNING_MESSAGE);
     }
 
     private void LoadCharacter(Packet p)

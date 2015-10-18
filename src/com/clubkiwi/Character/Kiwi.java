@@ -213,6 +213,9 @@ public class Kiwi extends JPanel implements Runnable
         if (health < 0)
             health = 0;
 
+        if(health > 100)
+            health = 100;
+
         this.health = health;
     }
 
@@ -221,7 +224,7 @@ public class Kiwi extends JPanel implements Runnable
         if (money < 0)
             money = 0;
 
-        if (money < 100000)
+        if (money > 100000)
             money = 100000;
 
         this.money = money;
@@ -505,6 +508,19 @@ public class Kiwi extends JPanel implements Runnable
 
                 ClubKiwi.gui.getCurrentRoom().revalidate();
                 ClubKiwi.gui.getCurrentRoom().repaint();
+
+
+                //Handle room switching
+                if(ClubKiwi.gui.getCurrentRoom() == ClubKiwi.gui.main)
+                {
+                    if(this.x >= ClubKiwi.gui.main.getSizeX() - 100)
+                        ClubKiwi.gui.SwitchToRoom(ClubKiwi.gui.room2);
+                }
+                else
+                {
+                    if (this.x == 0 )
+                        ClubKiwi.gui.SwitchToRoom(ClubKiwi.gui.main);
+                }
 
 
                 // repaint();

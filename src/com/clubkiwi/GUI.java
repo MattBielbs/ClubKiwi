@@ -1,9 +1,6 @@
 package com.clubkiwi;
 
-import com.clubkiwi.Character.Item;
-import com.clubkiwi.World.Dispenser;
 import com.clubkiwi.World.Room;
-import com.clubkiwi.World.WorldItem;
 import com.clubkiwiserver.Packet.PacketType;
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +76,7 @@ public class GUI extends JFrame implements ActionListener
     {
         main = new Room(0, "Main", 2000, 2000, 0, 0, ck.resMgr.getImage("bg"));
         login = new Room(1, "Login", 800, 600, 0,0,ck.resMgr.getImage("login"));
-        room2 = new Room(2, "Room2", 1024, 768, 0, 0, ck.resMgr.getImage("bg2"));
+        room2 = new Room(2, "Shop", 1024, 768, 0, 0, ck.resMgr.getImage("bg2"));
 
         rooms.add(main);
         rooms.add(login);
@@ -92,6 +89,7 @@ public class GUI extends JFrame implements ActionListener
         JLabel ulabel = new JLabel("Username:");
         ulabel.setSize(100, 10);
         ulabel.setLocation(200, 220);
+        ulabel.setForeground(Color.WHITE);
         username = new JTextField();
         username.setSize(300, 20);
         username.setLocation(200, 240);
@@ -100,6 +98,7 @@ public class GUI extends JFrame implements ActionListener
         JLabel plabel = new JLabel("Password:");
         plabel.setLocation(200, 270);
         plabel.setSize(100,10);
+        plabel.setForeground(Color.WHITE);
         password = new JPasswordField();
         password.setSize(300, 20);
         password.setLocation(200, 290);
@@ -137,13 +136,10 @@ public class GUI extends JFrame implements ActionListener
 
     public void SwitchToRoom(Room room)
     {
+
         if(currentRoom != null)
-        {
             remove(currentRoom);
 
-            //Remove all worlditems from old room
-          //  currentRoom.getWorldItems().clear();
-        }
 
         add(room, BorderLayout.CENTER);
         currentRoom = room;
@@ -213,7 +209,6 @@ public class GUI extends JFrame implements ActionListener
     {
 
         SwitchToRoom(main);
-
         main.add(ck.getLocalKiwi(), 1);
     }
 
