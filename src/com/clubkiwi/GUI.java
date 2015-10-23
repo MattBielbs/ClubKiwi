@@ -22,8 +22,7 @@ public class GUI extends JFrame implements ActionListener
     private ArrayList<String> chathistory = new ArrayList<>();
     private boolean ingame = false;
 
-
-    //Camera and map shit
+    //Camera and map
     //camera size is 800x500
     private int camX, camY;
     private Room currentRoom;
@@ -49,6 +48,7 @@ public class GUI extends JFrame implements ActionListener
     }
 
     @Override
+    //Action listener.
     public void actionPerformed(ActionEvent e)
     {
         switch(e.getActionCommand())
@@ -72,6 +72,7 @@ public class GUI extends JFrame implements ActionListener
         }
     }
 
+    //Create rooms
     private void loadRooms()
     {
         main = new Room(0, "Main", 2000, 2000, 0, 0, ck.resMgr.getImage("bg"));
@@ -83,6 +84,7 @@ public class GUI extends JFrame implements ActionListener
         rooms.add(room2);
     }
 
+    //Build the login page.
     private void ShowLogin()
     {
         //Username
@@ -134,26 +136,20 @@ public class GUI extends JFrame implements ActionListener
         username.requestFocus();
     }
 
+    //Handles everything when changing room.
     public void SwitchToRoom(Room room)
     {
-
         if(currentRoom != null)
             remove(currentRoom);
-
 
         add(room, BorderLayout.CENTER);
         currentRoom = room;
         camX = room.getStartX();
         camY = room.getStaryY();
-        //revalidate();
 
         //swap the localkiwi
         if(ck.getLocalKiwi() != null)
             ck.getLocalKiwi().swaproom(currentRoom);
-
-        //Move all world objects to back
-     //   for(WorldItem item : room.getWorldItems())
-     //           room.moveToBack(item);
 
         //add the inventory
         boolean hasinv = false;
@@ -174,6 +170,7 @@ public class GUI extends JFrame implements ActionListener
         setSize(800, 600);
     }
 
+    //The start of the gui.
     public void StartGameView()
     {
         //Chatbox
@@ -205,13 +202,14 @@ public class GUI extends JFrame implements ActionListener
         revalidate();
     }
 
+    //Load the fisrt room after login.
     public void ShowMain()
     {
-
         SwitchToRoom(main);
         main.add(ck.getLocalKiwi(), 1);
     }
 
+    //Display chat in box.
     public void addChatMessage(String message)
     {
         chathistory.add(0, message);
@@ -219,6 +217,7 @@ public class GUI extends JFrame implements ActionListener
         chatview.ensureIndexIsVisible(chathistory.size());
     }
 
+    //region Getters/Setters
     public int getCamX()
     {
         return camX;
@@ -263,4 +262,5 @@ public class GUI extends JFrame implements ActionListener
     {
         return chatsend;
     }
+    //endregion
 }

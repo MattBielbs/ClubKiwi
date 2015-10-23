@@ -26,12 +26,8 @@ public class ConnectionManager implements Runnable
         {
             this.ck = ck;
             clientSocket = new DatagramSocket();
-            //clientSocket.setSoTimeout(1000);
             IPAddress = InetAddress.getByName("localhost");
-         //   IPAddress = InetAddress.getByName("matypatty.zapto.org");
             clientSocket.connect(IPAddress, 5678);
-
-
         }
         catch(Exception ex)
         {
@@ -47,14 +43,16 @@ public class ConnectionManager implements Runnable
         {
             try
             {
+                //Wait for packet recieve
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
 
+                //Parse it
                 Packet p = s.Deserialize(receivePacket.getData());
 
+                //Send it to our handle function if it contains info
                 if (p != null && p.getAllData().length != 0)
                     ck.OnPacketReceive(p);
-
             }
             catch (IOException ex)
             {
@@ -63,6 +61,7 @@ public class ConnectionManager implements Runnable
         }
     }
 
+    //Helper method for sending data with ease
     public void SendData(PacketType type, Object... objects)
     {
         try
@@ -73,7 +72,7 @@ public class ConnectionManager implements Runnable
         }
         catch(Exception ex)
         {
-            Helper.println("An error occurred while trying to send a message to the server.");
+            Helper.println("An error occurred while trying to send a message to the server. (server not running?)");
         }
     }
 }

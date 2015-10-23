@@ -63,9 +63,12 @@ public class InventoryManager extends JPanel
         setVisible(false);
         setSize(300, 300);
         this.ck = ck;
+
+        //All food images are apples but can be expanded if wanted.
         this.foodimage = ck.resMgr.getImage("apple");
     }
 
+    //Adds an item to the inventory
     public void addItemToInventory(Item item)
     {
         boolean exist = false;
@@ -82,14 +85,17 @@ public class InventoryManager extends JPanel
             items.add(new InvItem(1, item));
     }
 
+    //Removes an item from the inventory
     public void removeItemFromInventory(Item item)
     {
         for(InvItem i : items)
         {
             if(i.getItem().equals(item))
             {
+                //Decrease the count
                 i.remove();
 
+                //If that now makes it zero then remove it entirely
                 if(i.getCount() == 0)
                 {
                     items.remove(i);
@@ -98,10 +104,12 @@ public class InventoryManager extends JPanel
             }
         }
 
+        //Move selected item down if its higher than the max items.
         if(selecteditem > items.size() && items.size() != 0)
             selecteditem = items.size();
     }
 
+    //Give kiwi item and remove.
     public void useItem()
     {
         if(getSelectedItem() != null)
@@ -111,6 +119,7 @@ public class InventoryManager extends JPanel
         }
     }
 
+    //Scroll to next inventory item.
     public void nextItem()
     {
         if(selecteditem == items.size())
@@ -119,6 +128,7 @@ public class InventoryManager extends JPanel
             selecteditem++;
     }
 
+    //Scroll to previous inventory item
     public void prevItem()
     {
         if(selecteditem == 1)
@@ -176,6 +186,7 @@ public class InventoryManager extends JPanel
     }
 
     @Nullable
+    //Returns the selected item if there is one.
     public Item getSelectedItem()
     {
         try

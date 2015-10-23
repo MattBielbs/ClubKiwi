@@ -22,22 +22,12 @@ public class Kiwi extends JPanel implements Runnable
         Up,
         Down,
         Left,
-        Right,
-        Fly
+        Right
     }
     //Attributes
     private int ID;
     private String name;
-    private double health, money;
-
-    //Additional stats
-    private double strength, speed, flight, swag;
-
-    //Needs
-    private double hunger, mood, energy;
-
-    //Client things (not synced to server)
-    private boolean sleeping = true;
+    private double health, money, hunger;
 
     //GUI things
     private int x, y, w, h;
@@ -47,18 +37,12 @@ public class Kiwi extends JPanel implements Runnable
     private boolean rotateup = true;
     private int currentroom;
 
-    public Kiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
+    public Kiwi(String name, double health, double money, double hunger)
     {
         this.name = name;
         this.health = health;
         this.money = money;
-        this.strength = strength;
-        this.speed = 100;
-        this.flight = flight;
-        this.swag = swag;
         this.hunger = hunger;
-        this.mood = mood;
-        this.energy = energy;
 
         //GUI things
         this.x = 0;
@@ -69,25 +53,18 @@ public class Kiwi extends JPanel implements Runnable
         kiwiimage = ClubKiwi.resMgr.getImage("kiwi");
         swaproom(ClubKiwi.gui.main);
 
-
         setSize(w, h);
         setLayout(null);
         setOpaque(false);
         setVisible(true);
     }
 
-    public void updateKiwi(String name, double health, double money, double strength, double speed, double flight, double swag, double hunger, double mood, double energy)
+    public void updateKiwi(String name, double health, double money, double hunger)
     {
         this.name = name;
         this.health = health;
         this.money = money;
-        this.strength = strength;
-        //this.speed = speed;
-        this.flight = flight;
-        this.swag = swag;
         this.hunger = hunger;
-        this.mood = mood;
-        this.energy = energy;
         repaint();
     }
 
@@ -134,54 +111,14 @@ public class Kiwi extends JPanel implements Runnable
         return money;
     }
 
-    public double getSwag()
-    {
-        return swag;
-    }
-
-    public double getStrength()
-    {
-        return strength;
-    }
-
-    public double getSpeed()
-    {
-        return speed;
-    }
-
-    public double getFlight()
-    {
-        return flight;
-    }
-
     public double getHunger()
     {
         return hunger;
     }
 
-    public double getMood()
-    {
-        return mood;
-    }
-
-    public double getEnergy()
-    {
-        return energy;
-    }
-
-    public boolean isSleeping()
-    {
-        return sleeping;
-    }
-
     public int getID()
     {
         return ID;
-    }
-
-    public int getCurrentroom()
-    {
-        return currentroom;
     }
 
     public int getW()
@@ -230,44 +167,6 @@ public class Kiwi extends JPanel implements Runnable
         this.money = money;
     }
 
-    public void setSwag(double swag)
-    {
-        this.swag = swag;
-    }
-
-    public void setStrength(double strength)
-    {
-        if (strength < 0)
-            strength = 0;
-
-        if(strength > 100)
-            strength = 100;
-
-        this.strength = strength;
-    }
-
-    public void setSpeed(double speed)
-    {
-        if (speed < 0)
-            speed = 0;
-
-        if(speed > 100)
-            speed = 100;
-
-        this.speed = speed;
-    }
-
-    public void setFlight(double flight)
-    {
-        if (flight < 0)
-            flight = 0;
-
-        if(flight > 100)
-            flight = 100;
-
-        this.flight = flight;
-    }
-
     public void setHunger(double hunger)
     {
         if (hunger < 0)
@@ -277,47 +176,6 @@ public class Kiwi extends JPanel implements Runnable
             hunger = 100;
 
         this.hunger = hunger;
-    }
-
-    public void setMood(double mood)
-    {
-        if (mood < 0)
-            mood = 0;
-
-        if(mood > 100)
-            mood = 100;
-        this.mood = mood;
-    }
-
-    public void setEnergy(double energy)
-    {
-        if (energy < 0)
-            energy = 0;
-
-        if(energy > 100)
-            energy = 100;
-
-        this.energy = energy;
-    }
-
-    public void setX(int x)
-    {
-        this.x = x;
-    }
-
-    public void setY(int y)
-    {
-        this.y = y;
-    }
-
-    public void setCurrentroom(int currentroom)
-    {
-        this.currentroom = currentroom;
-    }
-
-    public void setSleeping(boolean sleeping)
-    {
-        this.sleeping = sleeping;
     }
 
     public void setID(int ID)
@@ -336,10 +194,6 @@ public class Kiwi extends JPanel implements Runnable
         //applies the effect to the kiwi
         this.setHealth(this.getHealth() + item.getEffect().getOrDefault("Health", 0.0));
         this.setHunger(this.getHunger() + item.getEffect().getOrDefault("Hunger", 0.0));
-        this.setMood(this.getMood() + item.getEffect().getOrDefault(("Mood"), 0.0));
-        this.setEnergy(this.getEnergy() + item.getEffect().getOrDefault("Energy", 0.0));
-        this.setSpeed(this.getSpeed() + item.getEffect().getOrDefault("Speed", 0.0));
-        this.setStrength(this.getStrength() + item.getEffect().getOrDefault("Strength", 0.0));
         this.setMoney(this.getMoney() + item.getEffect().getOrDefault("Money", 0.0));
         //Tell the server
         updateServer();
@@ -347,7 +201,7 @@ public class Kiwi extends JPanel implements Runnable
 
     public void updateServer()
     {
-        ClubKiwi.connMgr.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getStrength(), getSpeed(), getFlight(), getSwag(), getHunger(), getMood(), getEnergy());
+        ClubKiwi.connMgr.SendData(PacketType.KiwiUpdate_C, getHealth(), getMoney(), getHunger());
     }
 
     public void removeMovestate(MoveState movestate)
@@ -396,7 +250,6 @@ public class Kiwi extends JPanel implements Runnable
         ClubKiwi.gui.rooms.get(currentroom).remove(this);
         ClubKiwi.gui.rooms.get(currentroom).add(new PoofEffect(this.x, this.y));
     }
-
 
     //String things
     @Override
@@ -472,16 +325,16 @@ public class Kiwi extends JPanel implements Runnable
 
                 //Move player
                 if (hasMoveState(MoveState.Up) && y > 0)
-                    this.y -= (speed / 20);
+                    this.y -= 5;
 
                 if (hasMoveState(MoveState.Down) && y < ClubKiwi.gui.getCurrentRoom().getSizeY() - h)
-                    this.y += (speed / 20);
+                    this.y += 5;
 
                 if (hasMoveState(MoveState.Left) && x > 0)
-                    this.x -= (speed / 20);
+                    this.x -= 5;
 
                 if (hasMoveState(MoveState.Right) && x < ClubKiwi.gui.getCurrentRoom().getSizeX() - w)
-                    this.x += (speed / 20);
+                    this.x += 5;
 
                 if (MoveStates.size() > 0)
                     sendpos();

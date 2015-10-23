@@ -19,16 +19,14 @@ import java.util.Map;
  */
 public class ResourceManager
 {
-   // private ClubKiwi ck;
     private ClassLoader cldr;
     private Image missingImage;
     private AudioInputStream missingAudio;
     private HashMap<String, Image> loadedImages = new HashMap<>();
     private HashMap<String, AudioInputStream> loadedSounds = new HashMap<>();
 
-    public ResourceManager(/*ClubKiwi ck*/)
+    public ResourceManager()
     {
-       // this.ck = ck;
         cldr = this.getClass().getClassLoader();
 
         try

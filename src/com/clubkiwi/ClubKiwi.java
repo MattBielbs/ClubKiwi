@@ -33,6 +33,7 @@ public class ClubKiwi
     {
         running = true;
 
+        //Shutdown hook so we can send disconnect message.
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 Shutdown();
@@ -62,7 +63,6 @@ public class ClubKiwi
 
         initItems();
 
-
         //Start the connection.
         connThread = new Thread(connMgr);
         connThread.start();
@@ -75,19 +75,15 @@ public class ClubKiwi
         //could be sent from server to add items remotely.
         HashMap<String, Double> map1 = new HashMap<>();
         map1.put("Hunger", 20.0);
-        map1.put("Energy", 5.0);
-        items.add(new Item(items.size(), "Worms", "Worms add 20 hunger and 5 energy", 15.0, Item.ItemType.Food, map1));
+        items.add(new Item(items.size(), "Worms", "Worms add 20 hunger ", 15.0, Item.ItemType.Food, map1));
 
         HashMap<String, Double> map2 = new HashMap<>();
         map2.put("Hunger", 5.0);
-        map2.put("Energy", 5.0);
-        map2.put("Mood", -5.0);
         items.add(new Item(items.size(), "Fruit", "Keep it fruity you groovy smoothie.", 420.0, Item.ItemType.Food, map2));
 
         HashMap<String, Double> map3 = new HashMap<>();
         map3.put("Hunger", -5.0);
-        map3.put("Mood", 10.0);
-        items.add(new Item(items.size(), "Grubz", "Doesn't taste very good but makes you happy.", 10.0, Item.ItemType.Food, map3));
+        items.add(new Item(items.size(), "Grubz", "Doesn't taste very good.", 10.0, Item.ItemType.Food, map3));
 
         HashMap<String, Double> map4 = new HashMap<>();
         map4.put("Health", 10.0);
@@ -128,22 +124,22 @@ public class ClubKiwi
             case OtherPlayer_S://Server is telling you about another player
                 otherPlayerInfo(p);
                 break;
-            case KiwiPos_S://Server is tewlling you about another players pos
+            case KiwiPos_S://Server is tewlling you about another players pos (this is sent heaps so trying to keep data size small)
                 otherPlayerPos(p);
                 break;
-            case Chat_S:
+            case Chat_S://Server sending a chat message
                 addChatMessage((int)p.getData(0), (String)p.getData(1));
                 break;
-            case WorldItemAdd:
+            case WorldItemAdd://World item needs to be added.
                 gui.getCurrentRoom().addWorldItem(p);
                 break;
-            case WorldItemRemove:
+            case WorldItemRemove://World item needs to be removed.
                 gui.getCurrentRoom().removeWorldItem(p);
                 break;
-            case WorldItemUpdate:
+            case WorldItemUpdate://World item changed. (not used)
                 gui.getCurrentRoom().updateWorldItem(p);
                 break;
-            case CharacterDead:
+            case CharacterDead://You have been killed.
                 if(getLocalKiwi() == null)
                 {
                     JOptionPane.showMessageDialog(null, "Your kiwi has died while you were away. Please register a new kiwi to play again", "You Lose", JOptionPane.WARNING_MESSAGE);
@@ -158,6 +154,7 @@ public class ClubKiwi
         }
     }
 
+    //Adds a chat message
     private void addChatMessage(int idfrom, String message)
     {
         if(idfrom == -1)
@@ -166,6 +163,7 @@ public class ClubKiwi
             gui.addChatMessage(getPlayerByID(idfrom).getName() + ": " + message);
     }
 
+    //When a player disconnects.
     private void playerDisconnect(int id)
     {
         Kiwi k = getPlayerByID(id);
@@ -174,6 +172,7 @@ public class ClubKiwi
         gui.repaint();
     }
 
+    //Another player updated.
     private void otherPlayerInfo(Packet p)
     {
         //Check if client already exists.
@@ -181,19 +180,18 @@ public class ClubKiwi
         if (temp == null)
         {
             //create player
-            temp = new Kiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9), (Double) p.getData(10));
+            temp = new Kiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4));
             temp.setID((int) p.getData(0));
             players.add(temp);
-        //    gui.main.add(temp);
-
         }
         else
         {
             //update player
-            temp.updateKiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9), (Double) p.getData(10));
+            temp.updateKiwi((String) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4));
         }
     }
 
+    //Other player updated pos.
     private void otherPlayerPos(Packet p)
     {
         Kiwi temp = getPlayerByID((int) p.getData(0));
@@ -205,20 +203,22 @@ public class ClubKiwi
 
     private void UpdateKiwi(Packet p)
     {
-        localKiwi.updateKiwi((String) p.getData(0), (Double) p.getData(1), (Double) p.getData(2), (Double) p.getData(3), (Double) p.getData(4), (Double) p.getData(5), (Double) p.getData(6), (Double) p.getData(7), (Double) p.getData(8), (Double) p.getData(9));
+        localKiwi.updateKiwi((String) p.getData(0), (Double) p.getData(1), (Double) p.getData(2), (Double) p.getData(3));
         //cui.MainCharacterScreen();
     }
 
+    //Show a login error message.
     private void AccountError(int id, String message)
     {
         JOptionPane.showMessageDialog(null, message, "Account error", JOptionPane.WARNING_MESSAGE);
     }
 
+    //Load the local kiwi info and start the game
     private void LoadCharacter(Packet p)
     {
         Helper.println("Logged in!");
-        localKiwi = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3), (Double)p.getData(4), (Double)p.getData(5), (Double)p.getData(6), (Double)p.getData(7),(Double)p.getData(8),(Double)p.getData(9));
-        localKiwi.setID((int)p.getData(10));
+        localKiwi = new Kiwi((String)p.getData(0), (Double)p.getData(1), (Double)p.getData(2), (Double)p.getData(3));
+        localKiwi.setID((int)p.getData(4));
         players.add(localKiwi);
 
         Thread temp = new Thread(localKiwi);
@@ -228,7 +228,7 @@ public class ClubKiwi
         gui.StartGameView();
     }
 
-    //So the server can keep track of clients accurately
+    //So the server can keep track of clients accurately (called by hook)
     private void Shutdown()
     {
         Helper.println("Shutting down...");
@@ -237,6 +237,7 @@ public class ClubKiwi
         connThread.interrupt();
     }
 
+    //Return the local kiwi
     public static Kiwi getLocalKiwi()
     {
         return localKiwi;
@@ -245,10 +246,11 @@ public class ClubKiwi
     //Updating the server when client changes.
     public void updateServer()
     {
-        connMgr.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getStrength(), localKiwi.getSpeed(), localKiwi.getFlight(), localKiwi.getSwag(), localKiwi.getHunger(), localKiwi.getMood(), localKiwi.getEnergy());
+        connMgr.SendData(PacketType.KiwiUpdate_C, localKiwi.getHealth(), localKiwi.getMoney(), localKiwi.getHunger());
     }
 
     @Nullable
+    //Gets a player based on id.
     private Kiwi getPlayerByID(int id)
     {
         for(Kiwi k : players)

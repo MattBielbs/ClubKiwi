@@ -12,15 +12,11 @@ import java.awt.image.BufferedImage;
  */
 public class PoofEffect extends JPanel implements Runnable
 {
-    private int x, y;
     private Image poof;
 
     public PoofEffect(int x, int y)
     {
-        this.x = x;
-        this.y = y;
         this.poof = ClubKiwi.resMgr.getImage("poof");
-
         setLocation(x, y);
         setSize(109, 129);
         setOpaque(false);
@@ -39,7 +35,7 @@ public class PoofEffect extends JPanel implements Runnable
         }
         catch(Exception ex)
         {
-
+            //Exception can be ignored
         }
 
         this.setVisible(false);

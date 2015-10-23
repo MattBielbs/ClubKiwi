@@ -3,14 +3,14 @@ package com.clubkiwi.Character;
 import java.util.HashMap;
 
 /**
- * Item class (food and toys for now)
+ * Item class (food items)
  */
 public class Item
 {
+    //for future expansion
     public enum ItemType
     {
-        Food,
-        Toy
+        Food
     }
 
     private final int index;

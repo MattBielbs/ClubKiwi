@@ -26,6 +26,7 @@ public class InputManager implements KeyEventDispatcher
         manager.addKeyEventDispatcher(this);
     }
 
+    //Pass events into easy functions.
     public boolean dispatchKeyEvent(KeyEvent e)
     {
         if(e.getID() == KeyEvent.KEY_PRESSED)
@@ -36,6 +37,7 @@ public class InputManager implements KeyEventDispatcher
         return false;
     }
 
+    //On key press
     private void keyPressed(int keycode)
     {
         if (ck.gui.isIngame())
@@ -126,6 +128,7 @@ public class InputManager implements KeyEventDispatcher
         }
     }
 
+    //On key release
     private void keyReleased(int keycode)
     {
         if(ck.gui.isIngame())

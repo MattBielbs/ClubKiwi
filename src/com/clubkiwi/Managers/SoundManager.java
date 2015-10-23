@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Mathew on 10/2/2015.
+ * Currently only plays music but could also be expanded to play all sounds.
  */
 public class SoundManager implements Runnable
 {
@@ -46,6 +47,7 @@ public class SoundManager implements Runnable
     }
 
     @Override
+    //Loops through songs and plays bg music.
     public void run()
     {
         while(ck.running)
@@ -68,7 +70,7 @@ public class SoundManager implements Runnable
                         bgClip.open(bgSongs.get(bgCurrent));
 
                         FloatControl gainControl = (FloatControl) bgClip.getControl(FloatControl.Type.MASTER_GAIN);
-                        gainControl.setValue(-30.0f);
+                        gainControl.setValue(-20.0f);
 
                         bgClip.start();
                     }
